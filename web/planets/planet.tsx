@@ -17,7 +17,7 @@ import {
 } from "safe-units";
 
 export module StellarObjects {
-  const cubic_meter = meters.squared().times(meters);
+  const cubic_meter = meters.toThe("3")
   export const GRAVITIES = meters.per(seconds.squared()).scale(9.81);
   let mmHg = Measure.of(133.3, pascals);
 
@@ -124,31 +124,45 @@ export module StellarObjects {
     hydrosphereElement: String;
     averageTemperature: Temperature;
     life: biosphereType;
-}
+  }
 
-    export const isPlanetTidallyLockedByParentStarClass = (p: Planet): boolean => 
-      (
-        p.parentStar.class.color >= HarvardSpectralType.K &&
-        p.parentStar.class.luminosity >= YerkesSpectralType.V
-      );
-    
+  export const setPlanetDensity = (p: Planet, density: VolumeDensity): Planet => {
+    return {...p, density: density}
+  }
 
-      export const computePlanetaryGravityFromDensityAndRadius = (p: Planet): Acceleration => {
-      let relativeDiameter = p.size.scale(2).div(EARTH_DIAMETER);
-      let relativeDensity = p.density.div(EARTH_DENSITY);
+  export const setPlanetRadius = (p: Planet, radius: Length): Planet => {
+    return {...p, size: radius}
+  }
 
-      let localGravity = relativeDiameter.times(relativeDensity);
-      let gravity = Measure.of(localGravity.value, GRAVITIES);
-      return gravity;
-    }
+  export const isPlanetTidallyLockedByParentStarClass = (p: Planet): boolean => 
+  (
+    p.parentStar.class.color >= HarvardSpectralType.K &&
+    p.parentStar.class.luminosity >= YerkesSpectralType.V
+  );
+  
 
-    export const computeDensityFromMassAndRadius = (p: Planet): VolumeDensity => {
-      let volume = p.size
-        .squared()
-        .times(p.size)
-        .scale((4.0 / 3.0) * Math.PI);
-      let density = p.mass.div(volume);
+  export const computePlanetaryGravityFromDensityAndRadius = (p: Planet): Acceleration => {
+    let relativeDiameter = p.size.scale(2).div(EARTH_DIAMETER);
+    let relativeDensity = p.density.div(EARTH_DENSITY);
 
-      return density;
-    }
+    let localGravity = relativeDiameter.times(relativeDensity);
+    let gravity = Measure.of(localGravity.value, GRAVITIES);
+    return gravity;
+  }
+
+  export const computeDensityFromMassAndRadius = (p: Planet): VolumeDensity => {
+    let volume = p.size
+      .toThe("3")
+      .scale((4.0 / 3.0) * Math.PI);
+    let density = p.mass.div(volume);
+
+    return density;
+  }
+
+  export const getPressureAtAlt = (p: Planet, alt: Length): Pressure => {
+    let sHeight = alt.scale(-0.00012).value
+    let press = 760 * Math.exp(sHeight)
+
+    return Measure.of(press, mmHg)
+  }
 }
