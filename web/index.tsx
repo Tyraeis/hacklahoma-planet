@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { add } from '../pkg';
+import App from '../src/components/App';
 
 ReactDOM.render(
-    <div>{add(2, 3)}</div>,
+    <App />,
     document.getElementById('ui')
 );
