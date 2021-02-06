@@ -10,7 +10,11 @@ interface IProps {
 }
 
 const Slider = (props: IProps): JSX.Element => {
-  const { defaultValue, max, min } = props;
+  const { defaultValue, max, min, onChange } = props;
+
+  const handleSliderChange = (value: number): void => {
+    onChange(value)
+  };
   
   return (
     <AntDesignSlider
@@ -18,6 +22,7 @@ const Slider = (props: IProps): JSX.Element => {
       min={min}
       defaultValue={defaultValue}
       disabled={false}
+      onChange={handleSliderChange}
     />
   );
 };

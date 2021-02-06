@@ -7,6 +7,7 @@ import Checkbox from "./Checkbox";
 import RadioGroup, { IRadioOption } from "./RadioGroup";
 import SimpleSelect from "./SimpleSelect";
 import 'antd/dist/antd.css';
+import PlanetForm from "./PlanetForm";
 
 const Layout = styled.div`
   display: flex;
@@ -42,11 +43,7 @@ const App = (): JSX.Element => {
 
   return (
     <Layout>
-        <LogComponent value={selectedValue} />
-        <Button onPress={handleButtonPress} />
-        <Checkbox checked={checked} onChange={handleCheckboxChange} />
-        <RadioGroup options={radioOptions} />
-        <SimpleSelect options={['Football', 'Baseball', 'Soccer']} onChange={handleSelectChange}/>
+        <PlanetForm />
     </Layout>
   );
 };
