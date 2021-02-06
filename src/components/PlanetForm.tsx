@@ -1,36 +1,51 @@
 import { Form, Input } from "antd";
 import React, { useEffect, useState } from "react";
-import Checkbox from "./Checkbox";
 import InputAirPressure from "./FieldInputs/InputAirPressure";
 import InputAtmosphere from "./FieldInputs/InputAtmosphere";
 import InputDensity from "./FieldInputs/InputDensity";
 import InputGravity from "./FieldInputs/InputGravity";
 import InputMass from "./FieldInputs/InputMass";
-import InputParentStar from "./FieldInputs/InputParentStar";
 import InputSize from "./FieldInputs/InputSize";
 import InputHydrosphere from "./FieldInputs/InputHydrosphere";
 import InputHydrosphereElement from "./FieldInputs/InputHydrosphereElement";
 import InputAverageTemperature from "./FieldInputs/InputAverageTemperature";
 import InputLife from "./FieldInputs/InputAverageTemperature";
-import { Length, Measure, kilo, meters, grams, Mass, Acceleration } from "safe-units";
-import {StellarObjects} from '../../web/planets/planet';
-
-const Planet = StellarObjects;
+import {
+  Length,
+  Measure,
+  kilo,
+  meters,
+  grams,
+  Mass,
+  Acceleration,
+  Temperature,
+  kelvin,
+} from "safe-units";
+import InputParentStarTemperature from "./FieldInputs/InputParentStarTemperature";
+import InputParentStarLuminosity from "./FieldInputs/InputParentStarLuminosity";
+import { getStar, GRAVITIES, Planet, Star, YerkesSpectralType } from "../../web/planets/planet";
 
 const layout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 16 },
 };
 
-interface IProps {
-  onChange?: (value: StellarObjects.Planet) => void;
-}
+interface IProps {}
 
 const PlanetForm = (props: IProps): JSX.Element => {
-  const [currentPlanet, setCurrentPlanet] = useState<StellarObjects.Planet>();
+  const [currentPlanet, setCurrentPlanet] = useState<Planet>();
   const [planetSize, setPlanetSize] = useState<Length>();
   const [planetMass, setPlanetMass] = useState<Mass>();
   const [planetGravity, setPlanetGravity] = useState<Acceleration>();
+  const [
+    parentStarTemperature,
+    setParentStarTemperature,
+  ] = useState<Temperature>(Measure.of(0, kelvin));
+  const [
+    parentStarLuminosity,
+    setParentStarLuminosity,
+  ] = useState<YerkesSpectralType>();
+  const [parentStar, setParentStar] = useState<Star>();
   const {} = props;
 
   const onFinish = (values: any) => {
@@ -50,8 +65,20 @@ const PlanetForm = (props: IProps): JSX.Element => {
   };
 
   const handleGravityChange = (value: number) => {
-    setPlanetGravity(Measure.of(value, StellarObjects.GRAVITIES));
+    setPlanetGravity(Measure.of(value, GRAVITIES));
   };
+
+  const handleParentStarTemperatureChange = (value: number) => {
+    setParentStarTemperature(Measure.of(value, kelvin));
+  };
+
+  const handleParentStarLuminosityChange = (value: YerkesSpectralType) => {
+    setParentStarLuminosity(value);
+  };
+
+  useEffect(() => {
+    setParentStar(getStar(parentStarTemperature, parentStarLuminosity))
+  }, [parentStarLuminosity, parentStarTemperature])
 
   return (
     <Form
@@ -90,11 +117,22 @@ const PlanetForm = (props: IProps): JSX.Element => {
         <InputGravity onChange={handleGravityChange} />
       </Form.Item>
       <Form.Item
-        label="Parent Star"
+        label="Parent Star Temperature"
         name="parentStar"
         rules={[{ required: true, message: "Please input parentStar!" }]}
       >
-        <InputParentStar />
+        <InputParentStarTemperature
+          onChange={handleParentStarTemperatureChange}
+        />
+      </Form.Item>
+      <Form.Item
+        label="Parent Star Luminosity"
+        name="parentStar"
+        rules={[{ required: true, message: "Please input parentStar!" }]}
+      >
+        <InputParentStarLuminosity
+          onChange={handleParentStarLuminosityChange}
+        />
       </Form.Item>
       <Form.Item
         label="Atmosphere"

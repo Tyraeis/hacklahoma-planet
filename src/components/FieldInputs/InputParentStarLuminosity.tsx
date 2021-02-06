@@ -1,0 +1,61 @@
+import React from "react";
+import { YerkesSpectralType } from "../../../web/planets/planet";
+import SimpleSelect from "../SimpleSelect";
+
+interface IProps {
+  onChange?: (value: YerkesSpectralType) => void;
+}
+
+interface LuminosityName {
+  title: string;
+}
+
+const options = [
+  {
+    value: YerkesSpectralType.IaP,
+    label: YerkesSpectralType.IaP,
+  },
+  {
+    value: YerkesSpectralType.Ia,
+    label: YerkesSpectralType.Ia,
+  },
+  {
+    value: YerkesSpectralType.Iab,
+    label: YerkesSpectralType.Iab,
+  },
+  {
+    value: YerkesSpectralType.Ib,
+    label: YerkesSpectralType.Ib,
+  },
+  {
+    value: YerkesSpectralType.II,
+    label: YerkesSpectralType.II,
+  },
+  {
+    value: YerkesSpectralType.III,
+    label: YerkesSpectralType.III,
+  },
+  {
+    value: YerkesSpectralType.IV,
+    label: YerkesSpectralType.IV,
+  },
+  {
+    value: YerkesSpectralType.V,
+    label: YerkesSpectralType.V,
+  },
+  {
+    value: YerkesSpectralType.VI,
+    label: YerkesSpectralType.VI,
+  },
+  {
+    value: YerkesSpectralType.VII,
+    label: YerkesSpectralType.VII,
+  },
+];
+
+const InputParentStarLuminosity = (props: IProps): JSX.Element => {
+  const {} = props;
+  return <SimpleSelect options={options} />;
+};
+
+export default InputParentStarLuminosity;
