@@ -1,13 +1,15 @@
-import {Mass, Length, Acceleration, VolumeDensity, Temperature, Measure, kelvin, Pressure, kilograms, meters, seconds, kilo, grams, centi} from "safe-units";
+import {Mass, Length, Acceleration, VolumeDensity, Temperature, Measure, kelvin, Pressure, kilograms, meters, seconds, kilo, grams, centi, pascals} from "safe-units";
 
 export module StellarObjects {
 
     const cubic_meter = meters.squared().times(meters)
+    let gravities = meters.per(seconds.squared()).scale(9.81)
+    let mmHg = Measure.of(133.3, pascals)
 
     export const EARTH_MASS = Measure.of(5.972e24, kilograms)
     export const EARTH_RADIUS = Measure.of(6371, kilo(meters))
     export const EARTH_DIAMETER = EARTH_RADIUS.scale(2)
-    export const EARTH_DENSITY = Measure.of(5.514, grams.per(centi(meters).squared().times(centi(meters))))
+    export const EARTH_DENSITY = Measure.of(5.514, grams.per(centi(cubic_meter)))
 
     export enum HarvardSpectralType { //Star Color
         O,
@@ -117,14 +119,22 @@ export module StellarObjects {
             return p.parentStar.class.color >= HarvardSpectralType.K && p.parentStar.class.luminosity >= YerkesSpectralType.V
         }
 
-        computePlanetaryGravityFromDensityAndRadius(p: Planet): Acceleration
+        computePlanetaryGravityFromDensityAndRadius(): Acceleration
         {
-            let relativeDiameter = (p.size.scale(2)).div(EARTH_DIAMETER)
-            let relativeDensity = p.density.div(EARTH_DENSITY)
+            let relativeDiameter = (this.size.scale(2)).div(EARTH_DIAMETER)
+            let relativeDensity = this.density.div(EARTH_DENSITY)
 
             let localGravity = relativeDiameter.times(relativeDensity)
-            let gravities = meters.per(seconds.squared()).scale(9.81)
-            return Measure.of(localGravity.value, gravities)
+            this.gravity = Measure.of(localGravity.value, gravities)
+            return this.gravity
+        }
+
+        computeDensityFromMassAndRadius(): VolumeDensity
+        {
+            let volume = this.size.squared().times(this.size).scale(4.0/3.0 * Math.PI)
+            this.density = this.mass.div(volume)
+
+            return this.density
         }
     }   
 }
