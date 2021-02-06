@@ -19,7 +19,7 @@ import {
 export module StellarObjects {
   const cubic_meter = meters.toThe("3")
   export const GRAVITIES = meters.per(seconds.squared()).scale(9.81);
-  let mmHg = Measure.of(133.3, pascals);
+  let mmHg = Measure.of(133.3, pascals, "mmHg");
 
   export const EARTH_MASS = Measure.of(5.972e24, kilograms);
   export const EARTH_RADIUS = Measure.of(6371, kilo(meters));
