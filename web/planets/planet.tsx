@@ -14,12 +14,17 @@ import {
   grams,
   centi,
   pascals,
+  yocto,
+  moles,
+  newtons,
 } from "safe-units";
 
 export module StellarObjects {
   const cubic_meter = meters.toThe("3")
   export const GRAVITIES = meters.per(seconds.squared()).scale(9.81);
   let mmHg = Measure.of(133.3, pascals, "mmHg");
+  let amu = Measure.of(1.66053907, yocto(grams), "amu"); //Unified atomic mass unit
+  const GAS_CONSTANT = Measure.of(8.3143, newtons.times(meters).per(moles.times(kelvin)))
 
   export const EARTH_MASS = Measure.of(5.972e24, kilograms);
   export const EARTH_RADIUS = Measure.of(6371, kilo(meters));
@@ -159,9 +164,13 @@ export module StellarObjects {
     return density;
   }
 
+  //Assumes air's molar mass is 29
   export const getPressureAtAlt = (p: Planet, alt: Length): Pressure => {
-    let sHeight = alt.scale(-0.00012).value
-    let press = 760 * Math.exp(sHeight)
+    let mgh = Measure.of(29, amu).times(p.gravity).times(alt).scale(-1)
+    let RT = GAS_CONSTANT.times(p.averageTemperature)
+
+    let exponent = mgh.div(RT)
+    let press = 760 * Math.exp(exponent.value)
 
     return Measure.of(press, mmHg)
   }
