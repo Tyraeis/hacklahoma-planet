@@ -1,1 +1,1 @@
-import('./index').catch(e => console.error('Error importing index.tsx'))
+import('./index').catch(e => console.error('Error importing index.tsx', e))

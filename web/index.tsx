@@ -1,5 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { kelvin, Measure } from 'safe-units';
+import App from '../src/components/App';
 import './style.css';
 import SimplexNoise from 'simplex-noise';
 import chroma from 'chroma-js';
@@ -7,7 +9,7 @@ import { rust_init, Renderer } from '../pkg';
 rust_init();
 
 ReactDOM.render(
-    <div>Hello, world!</div>,
+    <App />,
     document.getElementById('ui')
 );
 

@@ -1,0 +1,2 @@
+export const STANDARD_SPACING_VALUE = 8;
+export const STANDARD_SPACING = `${STANDARD_SPACING_VALUE}px`;
