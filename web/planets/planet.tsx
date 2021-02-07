@@ -27,10 +27,10 @@ import {
   const GAS_CONSTANT = Measure.of(8.3143, newtons.times(meters).per(moles.times(kelvin)))
   let atm = Measure.of(101325, pascals, "atm")
   
-  export const EARTH_MASS = Measure.of(5.972e24, kilograms, "M ??");
-  export const EARTH_RADIUS = Measure.of(6371, kilo(meters), "R ??");
+  export const EARTH_MASS = Measure.of(5.972e24, kilograms, "M 🜨");
+  export const EARTH_RADIUS = Measure.of(6371, kilo(meters), "R 🜨");
   export const EARTH_DIAMETER = EARTH_RADIUS.scale(2);
-  export const EARTH_DENSITY = Measure.of(5.514, grams.per(centi(meters).toThe("3")), "? ??"); //Do not use centi(cubic_meters)! They are not the same measurement!
+  export const EARTH_DENSITY = Measure.of(5.514, grams.per(centi(meters).toThe("3")), "ρ 🜨"); //Do not use centi(cubic_meters)! They are not the same measurement!
 
   export enum HarvardSpectralType { //Star Color
     O,
@@ -196,7 +196,7 @@ export enum AtmosphereType {
   const kelvinToFahrenheit = wrapUnaryFn(_kelvinToFahrenheit)
 
   export const getDisplayTemperature = (p: Planet): string => {
-    return kelvinToFahrenheit(p.averageTemperature).toString({formatValue: f => f.toFixed(2), formatUnit: () => "�F"})
+    return kelvinToFahrenheit(p.averageTemperature).toString({formatValue: f => f.toFixed(2), formatUnit: () => "°F"})
   }
 
 
