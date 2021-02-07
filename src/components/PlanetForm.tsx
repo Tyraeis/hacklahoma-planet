@@ -44,10 +44,10 @@ const layout = {
 interface IProps {}
 
 const PlanetForm = (props: IProps): JSX.Element => {
-  const [currentPlanet, setCurrentPlanet] = useState<Planet>();
-  const [planetSize, setPlanetSize] = useState<Length>();
-  const [planetMass, setPlanetMass] = useState<Mass>();
-  const [planetGravity, setPlanetGravity] = useState<Acceleration>();
+  const [currentPlanet, setCurrentPlanet] = useState<Planet | undefined>();
+  const [planetSize, setPlanetSize] = useState<Length>(Measure.of(0, kilo(meters)));
+  const [planetMass, setPlanetMass] = useState<Mass>(Measure.of(0, kilo(grams)));
+  const [planetGravity, setPlanetGravity] = useState<Acceleration>(Measure.of(0, GRAVITIES));
   const [
     parentStarTemperature,
     setParentStarTemperature,
@@ -55,14 +55,14 @@ const PlanetForm = (props: IProps): JSX.Element => {
   const [
     parentStarLuminosity,
     setParentStarLuminosity,
-  ] = useState<YerkesSpectralType>();
-  const [parentStar, setParentStar] = useState<Star>();
-  const [planetAtmosphere, setPlanetAtmosphere] = useState<AtmosphereType>();
-  const [planetHydrosphere, setPlanetHydrosphere] = useState<HydrosphereType>();
-  const [planetLife, setPlanetLife] = useState<BiosphereType>();
-  const [planetAirPressure, setPlanetAirPressure] = useState<Pressure>();
-  const [planetHydrosphereElement, setPlanetHydrosphereElement] = useState<string>();
-  const [planetAverageTemperature, setPlanetAverageTemperature] = useState<Temperature>();
+  ] = useState<YerkesSpectralType>(YerkesSpectralType.V);
+  const [parentStar, setParentStar] = useState<Star | undefined>();
+  const [planetAtmosphere, setPlanetAtmosphere] = useState<AtmosphereType>(AtmosphereType.None);
+  const [planetHydrosphere, setPlanetHydrosphere] = useState<HydrosphereType>(HydrosphereType.None);
+  const [planetLife, setPlanetLife] = useState<BiosphereType>(BiosphereType.None);
+  const [planetAirPressure, setPlanetAirPressure] = useState<Pressure>(Measure.of(0, atmospheres));
+  const [planetHydrosphereElement, setPlanetHydrosphereElement] = useState<string>('');
+  const [planetAverageTemperature, setPlanetAverageTemperature] = useState<Temperature>(Measure.of(0, kelvin));
   const {} = props;
 
   const onFinish = (values: any) => {
