@@ -27,6 +27,8 @@ pub fn rust_init() {
 #[wasm_bindgen]
 pub struct Renderer {
     canvas: HtmlCanvasElement,
+    width: i32,
+    height: i32,
     gl: WebGlRenderingContext,
     shader: ShaderProgram,
     scene: Scene
@@ -89,9 +91,13 @@ impl Renderer {
         if let Ok(Some(ctx)) = ctx {
             if let Ok(gl) = ctx.dyn_into::<WebGlRenderingContext>() {
                 let shader = ShaderProgram::default(&gl)?;
-                let scene = create_scene(&gl, &shader, canvas.width() as f32, canvas.height() as f32)?;
+                let width = canvas.width() as i32;
+                let height = canvas.height() as i32;
+                let scene = create_scene(&gl, &shader, width as f32, height as f32)?;
                 return Ok(Renderer {
                     canvas,
+                    width,
+                    height,
                     gl,
                     shader,
                     scene
@@ -102,15 +108,26 @@ impl Renderer {
     }
 
     #[wasm_bindgen]
+    pub fn resize(&mut self) {
+        self.width = self.canvas.width() as i32;
+        self.height = self.canvas.height() as i32;
+
+        self.scene.camera.projection = cgmath::perspective(
+            Deg(75.0),
+            self.width as f32 / self.height as f32,
+            0.1, 1000.0
+        );
+    }
+
+    #[wasm_bindgen]
     pub fn render(&mut self, t: f32) {
-        log::info!("{}", t as f32 / 1000.0 * 180.0);
         self.scene.objects[0].rotation = Matrix4::from_angle_y(Deg(t * 30.0));
 
         self.gl.enable(WebGlRenderingContext::DEPTH_TEST);
         self.gl.depth_func(WebGlRenderingContext::LEQUAL);
         self.gl.clear_color(0.0, 0.0, 0.0, 1.0);
         self.gl.clear_depth(1.0);
-        self.gl.viewport(0, 0, self.canvas.width() as i32, self.canvas.height() as i32);
+        self.gl.viewport(0, 0, self.width, self.height);
         self.gl.clear(WebGlRenderingContext::COLOR_BUFFER_BIT | WebGlRenderingContext::DEPTH_BUFFER_BIT);
         self.scene.render();
     }
