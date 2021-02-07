@@ -9,7 +9,6 @@ import InputSize from "./FieldInputs/InputSize";
 import InputHydrosphere from "./FieldInputs/InputHydrosphere";
 import InputHydrosphereElement from "./FieldInputs/InputHydrosphereElement";
 import InputAverageTemperature from "./FieldInputs/InputAverageTemperature";
-import InputLife from "./FieldInputs/InputAverageTemperature";
 import {
   Length,
   Measure,
@@ -20,10 +19,22 @@ import {
   Acceleration,
   Temperature,
   kelvin,
+  Pressure,
+  atmospheres,
 } from "safe-units";
 import InputParentStarTemperature from "./FieldInputs/InputParentStarTemperature";
 import InputParentStarLuminosity from "./FieldInputs/InputParentStarLuminosity";
-import { getStar, GRAVITIES, Planet, Star, YerkesSpectralType } from "../../web/planets/planet";
+import {
+  AtmosphereType,
+  BiosphereType,
+  getStar,
+  GRAVITIES,
+  HydrosphereType,
+  Planet,
+  Star,
+  YerkesSpectralType,
+} from "../../web/planets/planet";
+import InputLife from "./FieldInputs/InputLife";
 
 const layout = {
   labelCol: { span: 8 },
@@ -46,6 +57,12 @@ const PlanetForm = (props: IProps): JSX.Element => {
     setParentStarLuminosity,
   ] = useState<YerkesSpectralType>();
   const [parentStar, setParentStar] = useState<Star>();
+  const [planetAtmosphere, setPlanetAtmosphere] = useState<AtmosphereType>();
+  const [planetHydrosphere, setPlanetHydrosphere] = useState<HydrosphereType>();
+  const [planetLife, setPlanetLife] = useState<BiosphereType>();
+  const [planetAirPressure, setPlanetAirPressure] = useState<Pressure>();
+  const [planetHydrosphereElement, setPlanetHydrosphereElement] = useState<string>();
+  const [planetAverageTemperature, setPlanetAverageTemperature] = useState<Temperature>();
   const {} = props;
 
   const onFinish = (values: any) => {
@@ -77,8 +94,34 @@ const PlanetForm = (props: IProps): JSX.Element => {
   };
 
   useEffect(() => {
-    setParentStar(getStar(parentStarTemperature, parentStarLuminosity))
-  }, [parentStarLuminosity, parentStarTemperature])
+    setParentStar(getStar(parentStarTemperature, parentStarLuminosity));
+  }, [parentStarLuminosity, parentStarTemperature]);
+
+  const handleAtmosphereChange = (value: AtmosphereType) => {
+    setPlanetAtmosphere(value);
+  };
+
+  const handleHydrosphereChange = (value: HydrosphereType) => {
+    setPlanetHydrosphere(value);
+  };
+
+  const handleLifeChange = (value: BiosphereType) => {
+    setPlanetLife(value);
+  };
+
+  const handleAirPressureChange = (value: number) => {
+    setPlanetAirPressure(Measure.of(value, atmospheres))
+  }
+
+
+  const handleHydrosphereElementChange = (value: string) => {
+    setPlanetHydrosphereElement(value)
+  }
+
+  
+  const handleAverageTemperatureChange = (value: number) => {
+    setPlanetAverageTemperature(Measure.of(value, kelvin))
+  }
 
   return (
     <Form
@@ -139,21 +182,21 @@ const PlanetForm = (props: IProps): JSX.Element => {
         name="atmosphere"
         rules={[{ required: true, message: "Please input atmosphere!" }]}
       >
-        <InputAtmosphere />
+        <InputAtmosphere onChange={handleAtmosphereChange} />
       </Form.Item>
       <Form.Item
         label="Air Pressure"
         name="airPressure"
         rules={[{ required: true, message: "Please input airPressure!" }]}
       >
-        <InputAirPressure />
+        <InputAirPressure onChange={handleAirPressureChange}/>
       </Form.Item>
       <Form.Item
         label="Hydrosphere"
         name="hydrosphere"
         rules={[{ required: true, message: "Please input hydrosphere!" }]}
       >
-        <InputHydrosphere />
+        <InputHydrosphere onChange={handleHydrosphereChange}/>
       </Form.Item>
       <Form.Item
         label="Hydrosphere Element"
@@ -162,7 +205,7 @@ const PlanetForm = (props: IProps): JSX.Element => {
           { required: true, message: "Please input hydrosphereElement!" },
         ]}
       >
-        <InputHydrosphereElement />
+        <InputHydrosphereElement onChange={handleHydrosphereElementChange}/>
       </Form.Item>
       <Form.Item
         label="Average Temperature"
@@ -171,14 +214,14 @@ const PlanetForm = (props: IProps): JSX.Element => {
           { required: true, message: "Please input averageTemperature!" },
         ]}
       >
-        <InputAverageTemperature />
+        <InputAverageTemperature onChange={handleAverageTemperatureChange}/>
       </Form.Item>
       <Form.Item
         label="Life"
         name="life"
         rules={[{ required: true, message: "Please input life!" }]}
       >
-        <InputLife />
+        <InputLife onChange={handleLifeChange}/>
       </Form.Item>
     </Form>
   );

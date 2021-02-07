@@ -88,12 +88,12 @@ export function getStar(temp: Temperature, lum: YerkesSpectralType): Star {
 }
 
 export enum AtmosphereType {
-  Inert, //Inert gas with no oxygen
-  Hydrogn, //Primarily hydrogen
-  Oxygen, //Mix of oxygen and inert gases
-  Methane, //Methane
-  Corrosive, //Halogens, sulfur/nitrogen oxides, etc.
-  Reducing, //Reducing agents: atomic hydrogen, boranes, cyanides, some acids, etc
+  Inert = 'Intert', //Inert gas with no oxygen
+  Hydrogen = 'Hydrogen', //Primarily hydrogen
+  Oxygen = 'Oxygen', //Mix of oxygen and inert gases
+  Methane = 'Methane', //Methane
+  Corrosive = 'Corrosive', //Halogens, sulfur/nitrogen oxides, etc.
+  Reducing = 'Reducing', //Reducing agents: atomic hydrogen, boranes, cyanides, some acids, etc
 }
 
   export type Planet = {
@@ -104,10 +104,10 @@ export enum AtmosphereType {
     parentStar: Star; //Star this planet orbits
     atmosphere: AtmosphereType; //atmosphere composition
     airPressure: Pressure; //pressure. We'll want to display this in millibar probably, but should store as pascals
-    hydrosphere: hydrosphereType;
-    hydrosphereElement: String;
+    hydrosphere: HydrosphereType;
+    hydrosphereElement: string;
     averageTemperature: Temperature;
-    life: biosphereType;
+    life: BiosphereType;
   }
 
   export const setPlanetDensity = (p: Planet, density: VolumeDensity): Planet => {
@@ -149,19 +149,19 @@ export enum AtmosphereType {
 
     return Measure.of(press, mmHg)
   }
-export enum hydrosphereType {
-  None,
-  Liquid,
-  Solid,
+export enum HydrosphereType {
+  None = 'None',
+  Liquid = 'Liquid',
+  Solid = 'Solid',
 }
 
-export enum biosphereType {
-  None,
-  Cellular,
-  SimplePlants,
-  ComplexPlants,
-  SimpleAnimals,
-  ComplexAnimals,
-  SentientLife,
-  SapientLife,
+export enum BiosphereType {
+  None = 'None',
+  Cellular = 'Cellular',
+  SimplePlants = 'SimplePlants',
+  ComplexPlants = 'ComplexPlants',
+  SimpleAnimals = 'SimpleAnimals',
+  ComplexAnimals = 'ComplexAnimals',
+  SentientLife = 'SentientLife',
+  SapientLife = 'SapientLife',
 }

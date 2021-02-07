@@ -1,10 +1,14 @@
 import React from "react";
+import Slider from "../Slider";
 
-interface IProps {}
+interface IProps {
+  onChange?: (value: number) => void;
+}
 
-const InputLife = (props: IProps): JSX.Element => {
-  const {} = props;
-  return <></>;
+const InputAverageTemperature = (props: IProps): JSX.Element => {
+  const { onChange } = props;
+
+  return <Slider min={0} max={1000000} defaultValue={100000} onChange={onChange} />;
 };
 
-export default InputLife;
+export default InputAverageTemperature;

@@ -6,10 +6,6 @@ interface IProps {
   onChange?: (value: YerkesSpectralType) => void;
 }
 
-interface LuminosityName {
-  title: string;
-}
-
 const options = [
   {
     value: YerkesSpectralType.IaP,
