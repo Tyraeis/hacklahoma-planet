@@ -58,16 +58,16 @@ export enum HarvardSpectralType { //Star Color
 }
 
 export enum YerkesSpectralType { //Luminosity Class
-  IaP = "IaP",
-  Ia = "Ia",
-  Iab = "Iab",
-  Ib = "Ib",
-  II = "II",
-  III = "III",
-  IV = "IV",
-  V = "V",
-  VI = "VI",
-  VII = "VII",
+  IaP = "IaP - Hypergiant",
+  Ia = "Ia - Bright Supergiant",
+  Iab = "Iab - Intermediate Supergiant",
+  Ib = "Ib - Dim Supergiant",
+  II = "II - Bright Giant",
+  III = "III - Giant",
+  IV = "IV - Subgiant",
+  V = "V - Main Sequence Star",
+  VI = "VI - Subdwarf",
+  VII = "VII - White Dwarf",
 }
 
 export type StellarClassification = {
@@ -111,12 +111,12 @@ export function getStar(temp: Temperature, lum: YerkesSpectralType): Star {
 
 export enum AtmosphereType {
   None = "None", //Inert gas with no oxygen
-  Inert = "Inert", //Inert gas with no oxygen
+  Inert = "Inert Gas", //Inert gas with no oxygen
   Hydrogen = "Hydrogen", //Primarily hydrogen
-  Oxygen = "Oxygen", //Mix of oxygen and inert gases
+  Oxygen = "Oxygen Containing", //Mix of oxygen and inert gases
   Methane = "Methane", //Methane
   Corrosive = "Corrosive", //Halogens, sulfur/nitrogen oxides, etc.
-  Reducing = "Reducing", //Reducing agents: atomic hydrogen, boranes, cyanides, some acids, etc
+  Reducing = "Reducing Gases", //Reducing agents: atomic hydrogen, boranes, cyanides, some acids, etc
 }
 
 export const PLANET_MAX_SIZE: Length = Measure.of(20000, kilo(meters));
@@ -254,12 +254,12 @@ export const getDisplayTemperature = (p: Planet): string => {
 export enum BiosphereType {
   None = "None",
   Cellular = "Cellular",
-  SimplePlants = "SimplePlants",
-  ComplexPlants = "ComplexPlants",
-  SimpleAnimals = "SimpleAnimals",
-  ComplexAnimals = "ComplexAnimals",
-  SentientLife = "SentientLife",
-  SapientLife = "SapientLife",
+  SimplePlants = "Simple Plants",
+  ComplexPlants = "Complex Plants",
+  SimpleAnimals = "Simple Animals",
+  ComplexAnimals = "Complex Animals",
+  SentientLife = "Sentient Life",
+  SapientLife = "Sapient Life",
 }
 
 export enum HydrosphereType {
