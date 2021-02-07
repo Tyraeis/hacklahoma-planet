@@ -20,6 +20,8 @@ import {
   wrapUnaryFn,
   Volume,
   atmospheres,
+  Dimensionless,
+  wrapRootFn,
 } from "safe-units";
 
 const cubic_meter = meters.cubed();
@@ -33,6 +35,7 @@ const GAS_CONSTANT = Measure.of(
   8.3143,
   newtons.times(meters).per(moles.times(kelvin))
 );
+const AU = Measure.of(1.496e8, kilo(meters), "AU");
 
 export const EARTH_MASS = Measure.of(5.972e24, kilograms, "M 🜨");
 export const EARTH_RADIUS = Measure.of(6371, kilo(meters), "R 🜨");
@@ -74,6 +77,7 @@ export type StellarClassification = {
 export type Star = {
   class: StellarClassification;
   temperature: Temperature;
+  radius?: Length;
 };
 
 // Create a star.
@@ -139,6 +143,8 @@ export type Planet = {
   hydrosphereElement: string;
   averageTemperature: Temperature;
   life: BiosphereType;
+  bondAlbedo: Dimensionless;
+  orbitalDistance: Length;
 };
 
 export const setPlanetDensity = (p: Planet, density: VolumeDensity): Planet => {
@@ -188,6 +194,23 @@ export const getPressureAtAlt = (p: Planet, alt: Length): Pressure => {
 
   return Measure.of(press, pascals);
 };
+
+const _4thRoot = (n: number): number => {
+  return Math.pow(n, 1.0/4.0)
+}
+const fourthRoot = wrapRootFn(_4thRoot, "4")
+
+export const calculateEquilibriumTemperature = (p: Planet): Temperature => {
+  let Ts = p.parentStar.temperature;
+  let albedoFraction = fourthRoot(Measure.of(1, Dimensionless).minus(p.bondAlbedo));
+
+  //ToDo Get a "real" star radius
+  let Rs = p.parentStar.radius || Measure.of(695700, kilo(meters));
+  let a = p.orbitalDistance;
+  
+  let Teq = Ts.times(Measure.sqrt(Rs.div(a.scale(2)))).times(albedoFraction);
+  return Teq;
+}
 
 export const getDisplayRadius = (p: Planet): string => {
   return p.size.in(EARTH_RADIUS);
