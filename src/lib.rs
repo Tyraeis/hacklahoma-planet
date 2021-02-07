@@ -121,13 +121,11 @@ impl Renderer {
     #[wasm_bindgen]
     pub fn set_lod(&mut self, lod: usize) {
         self.lod = lod;
-        self.regenerate_planet();
     }
 
     #[wasm_bindgen]
     pub fn set_surface_info_func(&mut self, func: Function) {
         self.surface_info_func = func;
-        self.regenerate_planet();
     }
 
     fn get_surface_info(&self, vecs: &Vec<Vec<f32>>) -> Vec<SurfaceInfo> {
