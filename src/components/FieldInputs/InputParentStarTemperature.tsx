@@ -5,10 +5,10 @@ interface IProps {
   onChange?: (value: number) => void;
 }
 
-const InputAverageTemperature = (props: IProps): JSX.Element => {
+const InputParentStarTemperature = (props: IProps): JSX.Element => {
   const { onChange } = props;
 
   return <Slider min={0} max={1000000} defaultValue={100000} onChange={onChange} />;
 };
 
-export default InputAverageTemperature;
+export default InputParentStarTemperature;

@@ -1,10 +1,29 @@
 import React from "react";
+import { HydrosphereType } from "../../../web/planets/planet";
+import SimpleSelect from "../SimpleSelect";
 
-interface IProps {}
+interface IProps {
+  onChange?: (value: HydrosphereType) => void;
+}
 
-const InputHydrosphere = (props: IProps): JSX.Element => {
+const options = [
+  {
+    value: HydrosphereType.None,
+    label: HydrosphereType.None,
+  },
+  {
+    value: HydrosphereType.Liquid,
+    label: HydrosphereType.Liquid,
+  },
+  {
+    value: HydrosphereType.Solid,
+    label: HydrosphereType.Solid,
+  }
+];
+
+const InputAtmosphere = (props: IProps): JSX.Element => {
   const {} = props;
-  return <></>;
+  return <SimpleSelect options={options} />;
 };
 
-export default InputHydrosphere;
+export default InputAtmosphere;

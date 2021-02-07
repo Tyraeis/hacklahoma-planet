@@ -3,8 +3,13 @@ import React from "react";
 
 const { Option } = AntDesignSelect;
 
+interface Item {
+    value: any;
+    label: string;
+}
+
 interface IProps {
-    options: string[]
+    options: Item[]
     onChange?: (value: string) => void;
     width?: number;
 
@@ -13,8 +18,8 @@ const SimpleSelect = (props: IProps): JSX.Element => {
     const { options, onChange, width } = props;
 
     return (
-        <AntDesignSelect defaultValue={options.length > 0 ? options[0] : null} onChange={onChange}>
-            {options.map((option: string) => <Option value={option} style={{width: width}}>{option}</Option>)}
+        <AntDesignSelect defaultValue={options.length > 0 ? options[0].value : null} onChange={onChange}>
+            {options.map((option: Item) => <Option value={option.value} style={{width: width}}>{option.label}</Option>)}
         </AntDesignSelect>
     )
 }
