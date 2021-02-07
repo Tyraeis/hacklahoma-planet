@@ -22,7 +22,7 @@ import {
   atmospheres,
 } from "safe-units";
 
-const cubic_meter = meters.toThe("3");
+const cubic_meter = meters.cubed();
 export const GRAVITIES = Measure.of(
   1,
   meters.per(seconds.squared()).scale(9.81),
@@ -39,7 +39,7 @@ export const EARTH_RADIUS = Measure.of(6371, kilo(meters), "R 🜨");
 export const EARTH_DIAMETER = EARTH_RADIUS.scale(2);
 export const EARTH_DENSITY = Measure.of(
   5.514,
-  grams.per(centi(meters).toThe("3")),
+  grams.per(centi(meters).cubed()),
   "ρ 🜨"
 ); //Do not use centi(cubic_meters)! They are not the same measurement!
 
@@ -165,14 +165,14 @@ export const computePlanetaryGravityFromDensityAndRadius = (
 };
 
 export const computeMassFromDensityAndRadius = (p: Planet): Mass => {
-  let volume = p.size.toThe("3").scale((4.0 / 3.0) * Math.PI);
+  let volume = p.size.cubed().scale((4.0 / 3.0) * Math.PI);
   let mass = volume.times(p.density);
 
   return mass;
 };
 
 export const computeDensityFromMassAndRadius = (p: Planet): VolumeDensity => {
-  let volume = p.size.toThe("3").scale((4.0 / 3.0) * Math.PI);
+  let volume = p.size.cubed().scale((4.0 / 3.0) * Math.PI);
   let density = p.mass.div(volume);
 
   return density;
