@@ -1,5 +1,5 @@
 import { Input } from "antd"
-import React, { ChangeEvent } from "react"
+import React from "react"
 
 interface IProps {
     onChange: (value: string) => void;

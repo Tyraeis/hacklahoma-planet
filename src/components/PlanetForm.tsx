@@ -55,13 +55,19 @@ const layout = {
   wrapperCol: { span: 16 },
 };
 
-interface IProps {}
+interface IProps {
+  updatePlanet: (p: Planet | undefined) => void;
+}
+
+
 
 const PlanetForm = (props: IProps): JSX.Element => {
   const [currentPlanet, setCurrentPlanet] = useState<Planet | undefined>();
   const [planetSize, setPlanetSize] = useState<Length>(PLANET_DEF_SIZE);
   const [planetMass, setPlanetMass] = useState<Mass>(PLANET_DEF_MASS);
-  const [planetDensity, setPlanetDensity] = useState<Mass>(PLANET_DEF_DENSITY);
+  const [planetDensity, setPlanetDensity] = useState<VolumeDensity>(
+    PLANET_DEF_DENSITY
+  );
   const [planetGravity, setPlanetGravity] = useState<Acceleration>(
     PLANET_DEF_GRAVITY
   );
@@ -73,7 +79,7 @@ const PlanetForm = (props: IProps): JSX.Element => {
     parentStarLuminosity,
     setParentStarLuminosity,
   ] = useState<YerkesSpectralType>(YerkesSpectralType.V);
-  const [parentStar, setParentStar] = useState<Star | undefined>();
+  const [parentStar, setParentStar] = useState<Star>();
   const [planetAtmosphere, setPlanetAtmosphere] = useState<AtmosphereType>(
     AtmosphereType.None
   );
@@ -100,7 +106,46 @@ const PlanetForm = (props: IProps): JSX.Element => {
   const [planetOrbitalDistance, setPlanetOrbitalDistance] = useState<Length>(
     PLANET_DEF_ORBITAL_DISTANCE
   );
-  const {} = props;
+  const { updatePlanet } = props;
+
+  useEffect(() => {
+    if (parentStar !== undefined) {
+      const planet: Planet = {
+        size: planetSize,
+        mass: planetMass,
+        density: planetDensity,
+        gravity: planetGravity,
+        parentStar: parentStar,
+        atmosphere: planetAtmosphere,
+        airPressure: planetAirPressure,
+        hydrosphere: planetHydrosphere,
+        hydrosphereElement: planetHydrosphereElement,
+        averageTemperature: planetAverageTemperature,
+        life: planetLife,
+        bondAlbedo: planetBondAlbedo,
+        orbitalDistance: planetOrbitalDistance,
+      };
+      setCurrentPlanet(planet);
+    }
+  }, [
+    planetSize,
+    planetMass,
+    planetDensity,
+    planetGravity,
+    parentStar,
+    planetAtmosphere,
+    planetAirPressure,
+    planetHydrosphere,
+    planetAverageTemperature,
+    planetAverageTemperature,
+    planetLife,
+    planetBondAlbedo,
+    planetOrbitalDistance,
+  ]);
+
+  useEffect(() => {
+    updatePlanet(currentPlanet);
+  }, [currentPlanet]);
 
   const onFinish = (values: any) => {
     console.log("Success:", values);
@@ -188,17 +233,14 @@ const PlanetForm = (props: IProps): JSX.Element => {
           symbol={Length.symbol?.toString()}
         />
       </Form.Item>
-      <Form.Item label="Mass" name="mass">
+      <Form.Item label={<Label />} name="mass">
         <InputMass
           onChange={handleMassChange}
           symbol={Mass.symbol?.toString()}
         />
       </Form.Item>
       <Form.Item label="Density" name="density">
-        <InputDensity
-          onChange={handleDensityChange}
-          symbol={'kg/m^3'}
-        />
+        <InputDensity onChange={handleDensityChange} symbol={"kg/m^3"} />
       </Form.Item>
       <Form.Item label="Gravity" name="gravity">
         <InputGravity onChange={handleGravityChange} symbol={"m/s^2"} />

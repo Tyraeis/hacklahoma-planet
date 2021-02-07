@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import LogComponent from "./LogComponent";
 import Button from "./Button";
 import styled from "styled-components";
@@ -9,6 +9,7 @@ import SimpleSelect from "./SimpleSelect";
 import "antd/dist/antd.css";
 import PlanetForm from "./PlanetForm";
 import { Col, Row } from "antd";
+import { Planet } from "../../web/planets/planet";
 
 const Layout = styled.div`
   display: flex;
@@ -18,12 +19,13 @@ const Layout = styled.div`
 `;
 
 const App = (): JSX.Element => {
-
+  const [planet, setPlanet] = useState<Planet | undefined>();
+  
   return (
     <Layout>
       <Row>
         <Col span={7}>
-          <PlanetForm />
+          <PlanetForm updatePlanet={setPlanet}/>
         </Col>
         <Col span={17}></Col>
       </Row>
