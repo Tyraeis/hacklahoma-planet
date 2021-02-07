@@ -24,7 +24,7 @@ const InputOrbitalDistance = (props: IProps): JSX.Element => {
   };
 
   useEffect(() => {
-    setValue(PLANET_DEF_BOND_ALBEDO.value);
+    setValue(PLANET_DEF_ORBITAL_DISTANCE.value);
   }, []);
   return (
     <Row>

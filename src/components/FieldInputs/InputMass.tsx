@@ -24,7 +24,7 @@ const InputMass = (props: IProps): JSX.Element => {
   };
 
   useEffect(() => {
-    setValue(PLANET_DEF_BOND_ALBEDO.value);
+    setValue(PLANET_DEF_MASS.value);
   }, []);
 
   return (

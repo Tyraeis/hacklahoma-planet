@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import {
   PLANET_DEF_STAR_TEMPERATURE,
   PLANET_MAX_STAR_TEMPERATURE,
+  PLANET_MIN_STAR_TEMPERATURE,
 } from "../../../web/planets/planet";
 import Slider from "../Slider";
 
@@ -21,14 +22,14 @@ const InputParentStarTemperature = (props: IProps): JSX.Element => {
   };
 
   useEffect(() => {
-    setValue(PLANET_MAX_STAR_TEMPERATURE.value);
+    setValue(PLANET_DEF_STAR_TEMPERATURE.value);
   }, []);
 
   return (
     <Row>
       <Col span={12}>
         <Slider
-          min={PLANET_MAX_STAR_TEMPERATURE.value}
+          min={PLANET_MIN_STAR_TEMPERATURE.value}
           max={PLANET_MAX_STAR_TEMPERATURE.value}
           defaultValue={PLANET_DEF_STAR_TEMPERATURE.value}
           onChange={handleChange}
