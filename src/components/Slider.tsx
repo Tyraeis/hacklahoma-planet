@@ -7,10 +7,11 @@ interface IProps {
   max?: number;
   min?: number;
   onChange: (value: number) => void;
+  granularity?: number;
 }
 
 const Slider = (props: IProps): JSX.Element => {
-  const { defaultValue, max, min, onChange } = props;
+  const { defaultValue, granularity, max, min, onChange } = props;
 
   const handleSliderChange = (value: number): void => {
     onChange(value)
@@ -22,6 +23,7 @@ const Slider = (props: IProps): JSX.Element => {
       min={min}
       defaultValue={defaultValue}
       disabled={false}
+      step={granularity}
       onChange={handleSliderChange}
     />
   );
