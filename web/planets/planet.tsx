@@ -71,7 +71,7 @@ export type Star = {
 // luminosity is the star's Yerkes Classification
 export function getStar(temp: Temperature, lum: YerkesSpectralType): Star {
   let value = temp.value;
-  let starColor: HarvardSpectralType;
+  let starColor: HarvardSpectralType = HarvardSpectralType.M; //Set default to type M
   if (value >= 30000) {
     starColor = HarvardSpectralType.O;
   } else if (value >= 10000) {
