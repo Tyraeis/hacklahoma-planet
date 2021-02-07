@@ -22,10 +22,10 @@ const App = (): JSX.Element => {
   return (
     <Layout>
       <Row>
-        <Col span={12}>
+        <Col span={8}>
           <PlanetForm />
         </Col>
-        <Col span={12}></Col>
+        <Col span={16}></Col>
       </Row>
     </Layout>
   );

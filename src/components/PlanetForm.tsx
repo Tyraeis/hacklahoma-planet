@@ -197,11 +197,11 @@ const PlanetForm = (props: IProps): JSX.Element => {
       <Form.Item label="Density" name="density">
         <InputDensity
           onChange={handleDensityChange}
-          symbol={Mass.symbol?.toString()}
+          symbol={'kg/m^3'}
         />
       </Form.Item>
       <Form.Item label="Gravity" name="gravity">
-        <InputGravity onChange={handleGravityChange} symbol={"M/s^2"} />
+        <InputGravity onChange={handleGravityChange} symbol={"m/s^2"} />
       </Form.Item>
       <Form.Item label="Parent Star Temperature" name="parentStar">
         <InputParentStarTemperature

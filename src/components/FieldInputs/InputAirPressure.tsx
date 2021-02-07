@@ -1,5 +1,6 @@
 import { Row, Col, InputNumber } from "antd";
 import React, { useEffect, useState } from "react";
+import { atmospheres } from "safe-units";
 import { PLANET_DEF_AIR_PRESSURE, PLANET_DEF_BOND_ALBEDO, PLANET_MAX_AIR_PRESSURE, PLANET_MIN_AIR_PRESSURE } from "../../../web/planets/planet";
 import Slider from "../Slider";
 
@@ -19,16 +20,16 @@ const InputAirPressure = (props: IProps): JSX.Element => {
   } 
 
   useEffect(() => {
-      setValue(PLANET_DEF_AIR_PRESSURE.value)
+      setValue(PLANET_DEF_AIR_PRESSURE.value / atmospheres.value)
   }, [])
   
   return (
     <Row>
       <Col span={12}>
         <Slider
-          min={PLANET_MIN_AIR_PRESSURE.value}
-          max={PLANET_MAX_AIR_PRESSURE.value}
-          defaultValue={PLANET_DEF_AIR_PRESSURE.value}
+          min={PLANET_MIN_AIR_PRESSURE.value / atmospheres.value}
+          max={PLANET_MAX_AIR_PRESSURE.value / atmospheres.value}
+          defaultValue={PLANET_DEF_AIR_PRESSURE.value / atmospheres.value}
           onChange={handleChange}
           value={value}
         />
