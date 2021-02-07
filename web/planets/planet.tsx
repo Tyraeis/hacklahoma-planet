@@ -165,7 +165,7 @@ export enum AtmosphereType {
     let RT = GAS_CONSTANT.times(p.averageTemperature)
 
     let exponent = mgh.div(RT)
-    let press = 760 * Math.exp(exponent.value)
+    let press = p.airPressure.value * Math.exp(exponent.value)
 
     return Measure.of(press, mmHg)
   }
