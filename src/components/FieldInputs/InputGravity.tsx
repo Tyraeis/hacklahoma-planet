@@ -1,6 +1,7 @@
-import React from "react";
+import { Col, InputNumber, Row } from "antd";
+import React, { useEffect, useState } from "react";
 import { Length } from "safe-units";
-import { PLANET_MAX_GRAVITY, PLANET_MIN_GRAVITY } from "../../../web/planets/planet";
+import { PLANET_DEF_BOND_ALBEDO, PLANET_DEF_GRAVITY, PLANET_MAX_GRAVITY, PLANET_MIN_GRAVITY } from "../../../web/planets/planet";
 import Slider from "../Slider";
 
 interface IProps {
@@ -10,10 +11,36 @@ interface IProps {
 const InputDensity = (props: IProps): JSX.Element => {
   const { onChange } = props;
 
+  const [value, setValue] = useState<number>(0);
+
+  const handleChange = (value: number) => {
+    setValue(value)
+    onChange(value)
+  } 
+
+  useEffect(() => {
+      setValue(PLANET_DEF_BOND_ALBEDO.value)
+  }, [])
+  
   return (
-    <>
-      <Slider min={PLANET_MIN_GRAVITY.value} max={PLANET_MAX_GRAVITY.value} defaultValue={PLANET_MAX_GRAVITY.value / 10} onChange={onChange} />
-    </>
+    <Row>
+      <Col span={12}>
+        <Slider
+          min={PLANET_MIN_GRAVITY.value}
+          max={PLANET_MAX_GRAVITY.value}
+          defaultValue={PLANET_DEF_GRAVITY.value}
+          onChange={handleChange}
+          value={value}
+        />
+      </Col>
+      <Col>
+        <InputNumber
+          style={{ margin: "0 16px" }}
+          value={value}
+          onChange={handleChange}
+        />
+      </Col>
+    </Row>
   );
 };
 

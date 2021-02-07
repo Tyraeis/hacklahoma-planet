@@ -153,11 +153,11 @@ const PlanetForm = (props: IProps): JSX.Element => {
   };
 
   const handleBondAlbedoChange = (value: number) => {
-    setPlanetBondAlbedo(Measure.of(value, kilo(grams)))
+    setPlanetBondAlbedo(Measure.of(value, Dimensionless))
   }
 
   const handleOrbitalDistanceChange = (value: number) => {
-    setPlanetBondAlbedo(Measure.of(value, kilo(meters)))
+    setPlanetOrbitalDistance(Measure.of(value, kilo(meters)))
   }
   
   return (
