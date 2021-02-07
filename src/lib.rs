@@ -99,7 +99,7 @@ impl Renderer {
         self.height = self.canvas.height() as i32;
 
         self.scene.camera.projection = cgmath::perspective(
-            Deg(75.0),
+            Deg(30.0),
             self.width as f32 / self.height as f32,
             0.1, 1000.0
         );
@@ -196,7 +196,8 @@ impl Renderer {
     pub fn regenerate_planet(&mut self) {
         let mesh = self.create_planet();
         let mut obj = Object::new(mesh);
-        obj.position.z = -3.0;
+        obj.position.z = -8.0;
+        obj.position.x = 1.5;
 
         self.scene.objects.clear();
         self.scene.add(obj);
