@@ -93,7 +93,9 @@ impl ShaderProgram {
     pub fn default(gl: &WebGlRenderingContext) -> Result<Self> {
         let p = ShaderProgram::new(gl, DEFAULT_VERTEX_SHADER, DEFAULT_FRAGMENT_SHADER)?
             .with_attrib("position", 3, WebGlRenderingContext::FLOAT)
-            .with_uniform("transform_matrix");
+            .with_attrib("normal", 3, WebGlRenderingContext::FLOAT)
+            .with_uniform("world_view_projection")
+            .with_uniform("world_inverse_transpose");
         Ok(p)
     }
 

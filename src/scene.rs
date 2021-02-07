@@ -1,4 +1,4 @@
-use cgmath::{ Matrix4, Vector3, Rad };
+use cgmath::{ prelude::*, Matrix4, Vector3, Rad };
 use crate::mesh::Mesh;
 
 pub struct Object {
@@ -21,8 +21,10 @@ impl Object {
     }
 
     pub fn render(&self, view_matrix: &Matrix4<f32>) {
-        let transform = view_matrix * self.model_matrix();
-        self.mesh.render(&transform);
+        let world_matrix = self.model_matrix();
+        let transform = view_matrix * world_matrix;
+        let world_inverse_transpose = world_matrix.invert().unwrap().transpose();
+        self.mesh.render(&transform, &world_inverse_transpose);
     }
 }
 

@@ -1,9 +1,10 @@
-// fragment shaders don't have a default precision so we need
-// to pick one. mediump is a good default
 precision mediump float;
 
+varying vec3 v_normal;
+
 void main() {
-    // gl_FragColor is a special variable a fragment shader
-    // is responsible for setting
-    gl_FragColor = vec4(1, 0, 0.5, 1); // return reddish-purple
+    vec3 normal = normalize(v_normal);
+    float light = max(0.1, dot(normal, normalize(vec3(1, -0.2, -0.7))));
+    gl_FragColor = vec4(1, 0, 0.5, 1);
+    gl_FragColor.rgb *= light;
 }

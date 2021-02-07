@@ -3,6 +3,7 @@
 mod shaders;
 mod mesh;
 mod scene;
+mod planet;
 
 use anyhow::{ anyhow, Result };
 use wasm_bindgen::prelude::*;
@@ -37,7 +38,7 @@ pub struct Renderer {
 fn create_scene(gl: &WebGlRenderingContext, shader: &ShaderProgram, w: f32, h: f32) -> Result<Scene> {
     let mut scene = Scene::new(Camera::new(Deg(75.0), w / h, 0.1, 1000.0));
 
-    let vertices = [
+    /* let vertices = [
          1.0,  1.0,  1.0,
         -1.0,  1.0,  1.0,
         -1.0,  1.0, -1.0,
@@ -67,12 +68,22 @@ fn create_scene(gl: &WebGlRenderingContext, shader: &ShaderProgram, w: f32, h: f
 
     let mut index_buf = ElementArrayBuffer::new(gl);
     index_buf.data(&indices, WebGlRenderingContext::STATIC_DRAW, indices.len() as i32, 0);
+    
+    let mesh = Mesh::new(gl, vertex_buf, index_buf, shader);*/
 
-    let mut obj = Object::new(Mesh::new(gl, vertex_buf, index_buf, shader));
-    obj.position.z = -5.0;
+    let mesh = planet::create_icosahedron2(gl, shader, 3);
+    let mut obj = Object::new(mesh);
+    obj.position.z = -3.0;
     scene.add(obj);
 
     Ok(scene)
+}
+
+
+fn enable_extensions(gl: &WebGlRenderingContext) -> Result<()> {
+    gl.get_extension("OES_element_index_uint")
+        .map_err(|_| anyhow!("Missing extension: OES_element_index_uint"))?;
+    Ok(())
 }
 
 
@@ -90,6 +101,7 @@ impl Renderer {
         let ctx = canvas.get_context("webgl");
         if let Ok(Some(ctx)) = ctx {
             if let Ok(gl) = ctx.dyn_into::<WebGlRenderingContext>() {
+                enable_extensions(&gl)?;
                 let shader = ShaderProgram::default(&gl)?;
                 let width = canvas.width() as i32;
                 let height = canvas.height() as i32;

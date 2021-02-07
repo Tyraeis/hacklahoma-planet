@@ -1,11 +1,11 @@
-// an attribute will receive data from a buffer
 attribute vec4 position;
-uniform mat4 transform_matrix;
+attribute vec3 normal;
+uniform mat4 world_view_projection;
+uniform mat4 world_inverse_transpose;
 
-// all shaders have a main function
+varying vec3 v_normal;
+
 void main() {
-
-    // gl_Position is a special variable a vertex shader
-    // is responsible for setting
-    gl_Position = transform_matrix * position;
+    v_normal = mat3(world_inverse_transpose) * normal;
+    gl_Position = world_view_projection * position;
 }
