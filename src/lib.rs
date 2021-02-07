@@ -3,13 +3,15 @@
 mod shaders;
 mod mesh;
 mod scene;
-mod planet;
 
 use anyhow::{ anyhow, Result };
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
+use js_sys::Function;
 use web_sys::{ WebGlRenderingContext, HtmlCanvasElement };
 use cgmath::{ Deg, Matrix4 };
+use serde::{ Serialize, Deserialize };
+use genmesh::generators::{ IcoSphere, IndexedPolygon, SharedVertex };
 use crate::shaders::ShaderProgram;
 use crate::mesh::{ ArrayBuffer, ElementArrayBuffer, Mesh };
 use crate::scene::{ Object, Camera, Scene };
@@ -32,53 +34,10 @@ pub struct Renderer {
     height: i32,
     gl: WebGlRenderingContext,
     shader: ShaderProgram,
-    scene: Scene
+    scene: Scene,
+    lod: usize,
+    surface_info_func: Function
 }
-
-fn create_scene(gl: &WebGlRenderingContext, shader: &ShaderProgram, w: f32, h: f32) -> Result<Scene> {
-    let mut scene = Scene::new(Camera::new(Deg(75.0), w / h, 0.1, 1000.0));
-
-    /* let vertices = [
-         1.0,  1.0,  1.0,
-        -1.0,  1.0,  1.0,
-        -1.0,  1.0, -1.0,
-         1.0,  1.0, -1.0,
-         1.0, -1.0,  1.0,
-        -1.0, -1.0,  1.0,
-        -1.0, -1.0, -1.0,
-         1.0, -1.0, -1.0,
-    ];
-    let indices = [
-        0, 1, 3, //top 1
-        3, 1, 2, //top 2
-        2, 6, 7, //front 1
-        7, 3, 2, //front 2
-        7, 6, 5, //bottom 1
-        5, 4, 7, //bottom 2
-        5, 1, 4, //back 1
-        4, 1, 0, //back 2
-        4, 3, 7, //right 1
-        3, 4, 0, //right 2
-        5, 6, 2, //left 1
-        5, 1, 2  //left 2
-    ];
-
-    let mut vertex_buf = ArrayBuffer::new(gl);
-    vertex_buf.data(&vertices, WebGlRenderingContext::STATIC_DRAW, (vertices.len()/3) as i32, 0, 0);
-
-    let mut index_buf = ElementArrayBuffer::new(gl);
-    index_buf.data(&indices, WebGlRenderingContext::STATIC_DRAW, indices.len() as i32, 0);
-    
-    let mesh = Mesh::new(gl, vertex_buf, index_buf, shader);*/
-
-    let mesh = planet::create_icosahedron2(gl, shader, 3);
-    let mut obj = Object::new(mesh);
-    obj.position.z = -3.0;
-    scene.add(obj);
-
-    Ok(scene)
-}
-
 
 fn enable_extensions(gl: &WebGlRenderingContext) -> Result<()> {
     gl.get_extension("OES_element_index_uint")
@@ -86,34 +45,51 @@ fn enable_extensions(gl: &WebGlRenderingContext) -> Result<()> {
     Ok(())
 }
 
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct SurfaceInfo {
+    height: f32,
+    color: (f32, f32, f32)
+}
+
 
 #[wasm_bindgen]
 impl Renderer {
     #[wasm_bindgen(constructor)]
-    pub fn constructor(canvas: HtmlCanvasElement) -> Self {
-        match Renderer::new(canvas) {
+    pub fn constructor(canvas: HtmlCanvasElement, lod: usize, surface_info_func: Function) -> Self {
+        match Renderer::new(canvas, lod, surface_info_func) {
             Ok(result) => result,
             Err(e) => panic!("{}", e)
         }
     }
 
-    fn new(canvas: HtmlCanvasElement) -> Result<Renderer> {
+    fn new(canvas: HtmlCanvasElement, lod: usize, surface_info_func: Function) -> Result<Renderer> {
         let ctx = canvas.get_context("webgl");
         if let Ok(Some(ctx)) = ctx {
             if let Ok(gl) = ctx.dyn_into::<WebGlRenderingContext>() {
                 enable_extensions(&gl)?;
                 let shader = ShaderProgram::default(&gl)?;
+
                 let width = canvas.width() as i32;
                 let height = canvas.height() as i32;
-                let scene = create_scene(&gl, &shader, width as f32, height as f32)?;
-                return Ok(Renderer {
+                let scene = Scene::new(Camera::new(Deg(75.0), width as f32 / height as f32, 0.1, 1000.0));
+
+                let mut renderer = Renderer {
                     canvas,
                     width,
                     height,
                     gl,
                     shader,
-                    scene
-                });
+                    scene,
+                    lod,
+                    surface_info_func
+                };
+
+                let mesh = renderer.create_icosahedron();
+                let mut obj = Object::new(mesh);
+                obj.position.z = -3.0;
+                renderer.scene.add(obj);
+
+                return Ok(renderer);
             }
         }
         Err(anyhow!("Failed to get WebGl rendering context"))
@@ -142,5 +118,71 @@ impl Renderer {
         self.gl.viewport(0, 0, self.width, self.height);
         self.gl.clear(WebGlRenderingContext::COLOR_BUFFER_BIT | WebGlRenderingContext::DEPTH_BUFFER_BIT);
         self.scene.render();
+    }
+
+    #[wasm_bindgen]
+    pub fn set_surface_info_func(&mut self, func: Function) {
+        self.surface_info_func = func;
+    }
+
+    fn get_surface_info(&self, vecs: &Vec<Vec<f32>>) -> Vec<SurfaceInfo> {
+        let this = JsValue::null();
+        let vecs_js = JsValue::from_serde(vecs).unwrap();
+        match self.surface_info_func.call1(&this, &vecs_js) {
+            Ok(info) => {
+                match info.into_serde() {
+                    Ok(info) => return info,
+                    Err(e) => {
+                        log::error!("error receiving data from surface_info_func: {}", e);
+                        log::error!("{:?}", info);
+                    }
+                }
+            }
+            Err(e) => log::error!("error in surface_info_func: {:?}", e)
+        }
+        std::iter::repeat(SurfaceInfo {
+            height: 1.0,
+            color: (1.0, 0.0, 1.0)
+        }).take(vecs.len()).collect()
+    }
+
+    fn create_icosahedron(&self) -> Mesh {
+        let shape = IcoSphere::subdivide(self.lod);
+
+        let mut vertices: Vec<Vec<f32>> = shape.shared_vertex_iter()
+            .map(|v| vec![v.pos.x, v.pos.y, v.pos.z])
+            .collect();
+        
+        let info = self.get_surface_info(&vertices);
+        
+        let vertices: Vec<f32> = vertices.drain(..)
+            .enumerate()
+            .flat_map(|(i, v)| {
+                let h = info[i].height;
+                vec![v[0]*h, v[1]*h, v[2]*h]
+            })
+            .collect();
+
+        /* let normals: Vec<f32> = shape.shared_vertex_iter()
+            .flat_map(|v| vec![-v.normal.x, -v.normal.y, -v.normal.z])
+            .collect(); */
+
+        let indices: Vec<u32> = shape.indexed_polygon_iter()
+            .flat_map(|t| vec![t.x, t.z, t.y])
+            .map(|n| n as u32)
+            .collect();
+        
+        let normals = mesh::generate_normals(&vertices, &indices);
+
+        let mut vertex_buf = ArrayBuffer::new(&self.gl);
+        vertex_buf.data(&vertices, WebGlRenderingContext::STATIC_DRAW, shape.shared_vertex_count() as i32, 0, 0);
+
+        let mut index_buf = ElementArrayBuffer::new(&self.gl);
+        index_buf.data(&indices, WebGlRenderingContext::STATIC_DRAW, indices.len() as i32, 0);
+
+        let mut normal_buf = ArrayBuffer::new(&self.gl);
+        normal_buf.data(&normals, WebGlRenderingContext::STATIC_DRAW, shape.shared_vertex_count() as i32, 0, 0);
+
+        Mesh::new(&self.gl, vertex_buf, index_buf, normal_buf, &self.shader)
     }
 }
