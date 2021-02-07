@@ -2,7 +2,7 @@
 
 Generate your own custom planet, using your own input parameters:
 
-![image of a planet](images/thumbnail.png)
+![image of a planet](images/planet.png)
 
 ## Running
 
