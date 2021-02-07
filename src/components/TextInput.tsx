@@ -10,7 +10,7 @@ const TextInput = (props: IProps): JSX.Element => {
     const handleChange = (e: any) => {
         onChange(e.target.value)
     }
-    return <Input style={{width: '25vw'}} onChange={handleChange}/>
+    return <Input style={{width: '15vw'}} onChange={handleChange}/>
 }
 
 export default TextInput;

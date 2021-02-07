@@ -18,7 +18,7 @@ const SimpleSelect = (props: IProps): JSX.Element => {
     const { options, onChange, width } = props;
 
     return (
-        <AntDesignSelect style={{width: '25vw'}} defaultValue={options.length > 0 ? options[0].value : null} onChange={onChange}>
+        <AntDesignSelect style={{width: '15vw'}} defaultValue={options.length > 0 ? options[0].value : null} onChange={onChange}>
             {options.map((option: Item) => <Option value={option.value} style={{width: width}}>{option.label}</Option>)}
         </AntDesignSelect>
     )
