@@ -1,3 +1,4 @@
+use std::rc::Rc;
 use js_sys::{ Float32Array, Uint32Array };
 use web_sys::{ WebGlRenderingContext, WebGlBuffer };
 use cgmath::{ Matrix4, Vector3 };
@@ -115,7 +116,7 @@ pub struct Mesh {
     pub indices: ElementArrayBuffer,
     pub normals: ArrayBuffer,
     pub colors: ArrayBuffer,
-    pub shader: ShaderProgram
+    pub shader: Rc<ShaderProgram>
 }
 
 impl Mesh {
@@ -125,7 +126,7 @@ impl Mesh {
         indices: ElementArrayBuffer,
         normals: ArrayBuffer,
         colors: ArrayBuffer,
-        shader: &ShaderProgram
+        shader: Rc<ShaderProgram>
     ) -> Self {
         Mesh {
             gl: gl.clone(),

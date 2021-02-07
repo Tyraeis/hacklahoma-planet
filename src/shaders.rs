@@ -8,7 +8,6 @@ use crate::mesh::ArrayBuffer;
 static DEFAULT_VERTEX_SHADER: &'static str = include_str!("./vertex_shader.glsl");
 static DEFAULT_FRAGMENT_SHADER: &'static str = include_str!("./fragment_shader.glsl");
 
-#[derive(Clone)]
 pub struct Shader {
     gl: WebGlRenderingContext,
     shader: WebGlShader
@@ -55,7 +54,6 @@ pub struct Uniform {
     pub loc: WebGlUniformLocation
 }
 
-#[derive(Clone)]
 pub struct ShaderProgram {
     gl: WebGlRenderingContext,
     vertex_shader: Shader,

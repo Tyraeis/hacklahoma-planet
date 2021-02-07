@@ -4,6 +4,7 @@ mod shaders;
 mod mesh;
 mod scene;
 
+use std::rc::Rc;
 use anyhow::{ anyhow, Result };
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
@@ -33,7 +34,7 @@ pub struct Renderer {
     width: i32,
     height: i32,
     gl: WebGlRenderingContext,
-    shader: ShaderProgram,
+    shader: Rc<ShaderProgram>,
     scene: Scene,
     lod: usize,
     surface_info_func: Function
@@ -67,11 +68,11 @@ impl Renderer {
         if let Ok(Some(ctx)) = ctx {
             if let Ok(gl) = ctx.dyn_into::<WebGlRenderingContext>() {
                 enable_extensions(&gl)?;
-                let shader = ShaderProgram::default(&gl)?;
+                let shader = Rc::new(ShaderProgram::default(&gl)?);
 
                 let width = canvas.width() as i32;
                 let height = canvas.height() as i32;
-                let scene = Scene::new(Camera::new(Deg(75.0), width as f32 / height as f32, 0.1, 1000.0));
+                let scene = Scene::new(Camera::new(Deg(30.0), width as f32 / height as f32, 0.1, 1000.0));
 
                 let mut renderer = Renderer {
                     canvas,
@@ -84,10 +85,7 @@ impl Renderer {
                     surface_info_func
                 };
 
-                let mesh = renderer.create_icosahedron();
-                let mut obj = Object::new(mesh);
-                obj.position.z = -3.0;
-                renderer.scene.add(obj);
+                renderer.regenerate_planet();
 
                 return Ok(renderer);
             }
@@ -121,8 +119,15 @@ impl Renderer {
     }
 
     #[wasm_bindgen]
+    pub fn set_lod(&mut self, lod: usize) {
+        self.lod = lod;
+        self.regenerate_planet();
+    }
+
+    #[wasm_bindgen]
     pub fn set_surface_info_func(&mut self, func: Function) {
         self.surface_info_func = func;
+        self.regenerate_planet();
     }
 
     fn get_surface_info(&self, vecs: &Vec<Vec<f32>>) -> Vec<SurfaceInfo> {
@@ -146,7 +151,7 @@ impl Renderer {
         }).take(vecs.len()).collect()
     }
 
-    fn create_icosahedron(&self) -> Mesh {
+    fn create_planet(&self) -> Mesh {
         let shape = IcoSphere::subdivide(self.lod);
 
         let mut vertices: Vec<Vec<f32>> = shape.shared_vertex_iter()
@@ -186,6 +191,16 @@ impl Renderer {
         let mut color_buf = ArrayBuffer::new(&self.gl);
         color_buf.data(&colors, WebGlRenderingContext::STATIC_DRAW, shape.shared_vertex_count() as i32, 0, 0);
 
-        Mesh::new(&self.gl, vertex_buf, index_buf, normal_buf, color_buf, &self.shader)
+        Mesh::new(&self.gl, vertex_buf, index_buf, normal_buf, color_buf, self.shader.clone())
+    }
+
+    #[wasm_bindgen]
+    pub fn regenerate_planet(&mut self) {
+        let mesh = self.create_planet();
+        let mut obj = Object::new(mesh);
+        obj.position.z = -3.0;
+
+        self.scene.objects.clear();
+        self.scene.add(obj);
     }
 }
