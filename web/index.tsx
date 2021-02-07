@@ -26,39 +26,77 @@ function noise(
     return value;
 }
 
-const colors: [number, chroma.Color][] = [
-    [-0.5, chroma('#1253d3')],
-    [0.00, chroma('#1253d3')],
-    [0.05, chroma('#eae5ae')],
-    [0.10, chroma('#10983b')],
-    [0.45, chroma('#10983b')],
-    [0.50, chroma('#ffffff')]
-]
+const lerp = (a: number, b: number, p: number) => a*(1-p) + b*p;
+
+type ColorMap = [number, chroma.Color][];
+interface Settings {
+    colors: ColorMap,
+    seaLevel: number
+}
+function makeSettings(
+    minAltitude: number, maxAltitude: number, seaLevel: number,
+    seaColor: chroma.Color, beachColor: chroma.Color,
+    surfaceColor: chroma.Color, peakColor: chroma.Color
+): Settings {
+    let scale = 1 / (maxAltitude - minAltitude);
+
+    seaLevel = seaLevel * scale - 0.5;
+    maxAltitude = maxAltitude * scale - 0.5;
+    minAltitude = minAltitude * scale - 0.5;
+
+    console.log(minAltitude, seaLevel, maxAltitude);
+
+    let colors: ColorMap = [];
+    if (seaLevel > minAltitude) {
+        colors = colors.concat([
+            [-0.5, seaColor],
+            [lerp(seaLevel, maxAltitude, 0.0), seaColor],
+            [lerp(seaLevel, maxAltitude, 0.1), beachColor],
+            [lerp(seaLevel, maxAltitude, 0.2), surfaceColor]
+        ]);
+    } else {
+        colors = colors.concat([
+            [-0.5, surfaceColor]
+        ]);
+        seaLevel = minAltitude;
+    }
+    colors = colors.concat([
+        [lerp(seaLevel, maxAltitude, 0.9), surfaceColor],
+        [0.5, peakColor],
+    ])
+    return {
+        colors,
+        seaLevel
+    };
+}
+
+let settings = makeSettings(
+    -1000, 25000, 5000,
+    chroma('#1253d3'), chroma('#eae5ae'),
+    chroma('#10983b'), chroma('#ffffff')
+);
+
 let surfaceFrequency = 1;
 let surfaceAmplitude = 0.125;
 let surfacePersistance = 0.5;
 let surfaceOctaves = 8;
-let heightMin = 0.0;
-let heightMax = 0.0;
 let surface_info = (pts: number[][]) => pts.map((pt: number[]) => {
     const x = pt[0], y = pt[1], z = pt[2];
 
     let height = noise(x, y, z, surfaceFrequency, surfaceAmplitude, surfacePersistance, surfaceOctaves);
     const relHeight = Math.max(-1.0, Math.min(1.0, height / surfaceAmplitude));
-    if (relHeight > heightMax) heightMax = relHeight;
-    if (relHeight < heightMin) heightMin = relHeight;
-    for (var i = 0; i < colors.length; i++) {
-        if (colors[i][0] >= relHeight) {
+    for (var i = 0; i < settings.colors.length; i++) {
+        if (settings.colors[i][0] >= relHeight) {
             break;
         }
     }
     if (i <= 0) i = 1;
-    if (i >= colors.length) i = colors.length-1;
-    const left = colors[i-1];
-    const right = colors[i];
+    if (i >= settings.colors.length) i = settings.colors.length-1;
+    const left = settings.colors[i-1];
+    const right = settings.colors[i];
     const ratio = (relHeight - left[0]) / (right[0] - left[0]);
     const color = chroma.mix(left[1], right[1], ratio).rgb();
-    if (height < 0) height = 0;
+    if (relHeight < settings.seaLevel) height = settings.seaLevel * surfaceAmplitude;
 
     return {
         height: 1 + height,
