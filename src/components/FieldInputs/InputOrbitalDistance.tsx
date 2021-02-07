@@ -2,6 +2,7 @@ import { Row, Col, InputNumber } from "antd";
 import React, { useEffect, useState } from "react";
 import { Length } from "safe-units";
 import {
+    AU,
     PLANET_DEF_BOND_ALBEDO,
     PLANET_DEF_ORBITAL_DISTANCE,
   PLANET_MAX_ORBITAL_DISTANCE,
@@ -11,10 +12,11 @@ import Slider from "../Slider";
 
 interface IProps {
   onChange: (value: number) => void;
+  symbol: string | undefined;
 }
 
 const InputOrbitalDistance = (props: IProps): JSX.Element => {
-  const { onChange } = props;
+  const { onChange, symbol } = props;
 
   const [value, setValue] = useState<number>(0);
 
@@ -24,15 +26,15 @@ const InputOrbitalDistance = (props: IProps): JSX.Element => {
   };
 
   useEffect(() => {
-    setValue(PLANET_DEF_ORBITAL_DISTANCE.value);
+    setValue(PLANET_DEF_ORBITAL_DISTANCE.value / AU.value);
   }, []);
   return (
     <Row>
       <Col span={12}>
         <Slider
-          min={PLANET_MIN_ORBITAL_DISTANCE.value}
-          max={PLANET_MAX_ORBITAL_DISTANCE.value}
-          defaultValue={PLANET_DEF_ORBITAL_DISTANCE.value}
+          min={PLANET_MIN_ORBITAL_DISTANCE.value / AU.value}
+          max={PLANET_MAX_ORBITAL_DISTANCE.value / AU.value}
+          defaultValue={PLANET_DEF_ORBITAL_DISTANCE.value / AU.value}
           onChange={handleChange}
           value={value}
         />
@@ -43,6 +45,7 @@ const InputOrbitalDistance = (props: IProps): JSX.Element => {
           value={value}
           onChange={handleChange}
         />
+        {symbol}
       </Col>
     </Row>
   );

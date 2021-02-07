@@ -1,7 +1,6 @@
 import { Row, Col, InputNumber } from "antd";
 import React, { useEffect, useState } from "react";
 import {
-  PLANET_DEF_BOND_ALBEDO,
   PLANET_DEF_DENSITY,
   PLANET_MAX_DENSITY,
   PLANET_MIN_DENSITY,
@@ -10,10 +9,11 @@ import Slider from "../Slider";
 
 interface IProps {
   onChange: (value: number) => void;
+  symbol: string | undefined;
 }
 
 const InputDensity = (props: IProps): JSX.Element => {
-  const { onChange } = props;
+  const { onChange, symbol } = props;
 
   const [value, setValue] = useState<number>(0);
 
@@ -43,6 +43,7 @@ const InputDensity = (props: IProps): JSX.Element => {
           value={value}
           onChange={handleChange}
         />
+        {symbol}
       </Col>
     </Row>
   );

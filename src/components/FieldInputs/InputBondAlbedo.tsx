@@ -10,10 +10,11 @@ import Slider from "../Slider";
 
 interface IProps {
     onChange: (value: number) => void;
+  symbol: string | undefined;
 }
 
 const InputBondAlbedo = (props: IProps): JSX.Element => {
-  const { onChange } = props;
+  const { onChange, symbol } = props;
 
   const [value, setValue] = useState<number>(0);
 
@@ -45,6 +46,7 @@ const InputBondAlbedo = (props: IProps): JSX.Element => {
           onChange={handleChange}
           step={.01}
         />
+        {symbol}
       </Col>
     </Row>
   );

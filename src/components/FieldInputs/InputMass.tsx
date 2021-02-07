@@ -1,8 +1,8 @@
 import { Row, Col, InputNumber } from "antd";
 import React, { useEffect, useState } from "react";
-import { Length } from "safe-units";
+import { GenericMeasure, Measure } from "safe-units";
 import {
-  PLANET_DEF_BOND_ALBEDO,
+  EARTH_MASS,
   PLANET_DEF_MASS,
   PLANET_MAX_MASS,
   PLANET_MIN_MASS,
@@ -11,10 +11,11 @@ import Slider from "../Slider";
 
 interface IProps {
   onChange: (value: number) => void;
+  symbol?: string | undefined;
 }
 
 const InputMass = (props: IProps): JSX.Element => {
-  const { onChange } = props;
+  const { onChange, symbol } = props;
 
   const [value, setValue] = useState<number>(0);
 
@@ -24,16 +25,16 @@ const InputMass = (props: IProps): JSX.Element => {
   };
 
   useEffect(() => {
-    setValue(PLANET_DEF_MASS.value);
+    setValue(PLANET_DEF_MASS.value / EARTH_MASS.value);
   }, []);
 
   return (
     <Row>
       <Col span={12}>
         <Slider
-          min={PLANET_MIN_MASS.value}
-          max={PLANET_MAX_MASS.value}
-          defaultValue={PLANET_DEF_MASS.value}
+          min={PLANET_MIN_MASS.value / EARTH_MASS.value}
+          max={PLANET_MAX_MASS.value / EARTH_MASS.value}
+          defaultValue={PLANET_DEF_MASS.value / EARTH_MASS.value}
           onChange={handleChange}
           value={value}
         />
@@ -44,6 +45,7 @@ const InputMass = (props: IProps): JSX.Element => {
           value={value}
           onChange={handleChange}
         />
+        {symbol}
       </Col>
     </Row>
   );

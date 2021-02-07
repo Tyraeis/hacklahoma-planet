@@ -22,16 +22,27 @@ import {
   Pressure,
   atmospheres,
   Dimensionless,
+  VolumeDensity,
 } from "safe-units";
 import InputParentStarTemperature from "./FieldInputs/InputParentStarTemperature";
 import InputParentStarLuminosity from "./FieldInputs/InputParentStarLuminosity";
 import {
   AtmosphereType,
+  AU,
   BiosphereType,
+  EARTH_MASS,
   getStar,
   GRAVITIES,
   HydrosphereType,
   Planet,
+  PLANET_DEF_AIR_PRESSURE,
+  PLANET_DEF_BOND_ALBEDO,
+  PLANET_DEF_DENSITY,
+  PLANET_DEF_GRAVITY,
+  PLANET_DEF_MASS,
+  PLANET_DEF_ORBITAL_DISTANCE,
+  PLANET_DEF_SIZE,
+  PLANET_DEF_STAR_TEMPERATURE,
   Star,
   YerkesSpectralType,
 } from "../../web/planets/planet";
@@ -48,19 +59,16 @@ interface IProps {}
 
 const PlanetForm = (props: IProps): JSX.Element => {
   const [currentPlanet, setCurrentPlanet] = useState<Planet | undefined>();
-  const [planetSize, setPlanetSize] = useState<Length>(
-    Measure.of(0, kilo(meters))
-  );
-  const [planetMass, setPlanetMass] = useState<Mass>(
-    Measure.of(0, kilo(grams))
-  );
+  const [planetSize, setPlanetSize] = useState<Length>(PLANET_DEF_SIZE);
+  const [planetMass, setPlanetMass] = useState<Mass>(PLANET_DEF_MASS);
+  const [planetDensity, setPlanetDensity] = useState<Mass>(PLANET_DEF_DENSITY);
   const [planetGravity, setPlanetGravity] = useState<Acceleration>(
-    Measure.of(0, GRAVITIES)
+    PLANET_DEF_GRAVITY
   );
   const [
     parentStarTemperature,
     setParentStarTemperature,
-  ] = useState<Temperature>(Measure.of(0, kelvin));
+  ] = useState<Temperature>(PLANET_DEF_STAR_TEMPERATURE);
   const [
     parentStarLuminosity,
     setParentStarLuminosity,
@@ -76,7 +84,7 @@ const PlanetForm = (props: IProps): JSX.Element => {
     BiosphereType.None
   );
   const [planetAirPressure, setPlanetAirPressure] = useState<Pressure>(
-    Measure.of(0, atmospheres)
+    PLANET_DEF_AIR_PRESSURE
   );
   const [
     planetHydrosphereElement,
@@ -86,14 +94,12 @@ const PlanetForm = (props: IProps): JSX.Element => {
     planetAverageTemperature,
     setPlanetAverageTemperature,
   ] = useState<Temperature>(Measure.of(0, kelvin));
-  const [
-    planetBondAlbedo,
-    setPlanetBondAlbedo,
-  ] = useState<Dimensionless>(Measure.of(0, Dimensionless));
-  const [
-    planetOrbitalDistance,
-    setPlanetOrbitalDistance,
-  ] = useState<Length>(Measure.of(0, kilo(meters)));
+  const [planetBondAlbedo, setPlanetBondAlbedo] = useState<Dimensionless>(
+    PLANET_DEF_BOND_ALBEDO
+  );
+  const [planetOrbitalDistance, setPlanetOrbitalDistance] = useState<Length>(
+    PLANET_DEF_ORBITAL_DISTANCE
+  );
   const {} = props;
 
   const onFinish = (values: any) => {
@@ -109,7 +115,11 @@ const PlanetForm = (props: IProps): JSX.Element => {
   };
 
   const handleMassChange = (value: number) => {
-    setPlanetMass(Measure.of(value, kilo(grams)));
+    setPlanetMass(Measure.of(value, EARTH_MASS));
+  };
+
+  const handleDensityChange = (value: number) => {
+    setPlanetMass(Measure.of(value, VolumeDensity));
   };
 
   const handleGravityChange = (value: number) => {
@@ -153,13 +163,17 @@ const PlanetForm = (props: IProps): JSX.Element => {
   };
 
   const handleBondAlbedoChange = (value: number) => {
-    setPlanetBondAlbedo(Measure.of(value, Dimensionless))
-  }
+    setPlanetBondAlbedo(Measure.of(value, Dimensionless));
+  };
 
   const handleOrbitalDistanceChange = (value: number) => {
-    setPlanetOrbitalDistance(Measure.of(value, kilo(meters)))
-  }
-  
+    setPlanetOrbitalDistance(Measure.of(value, AU));
+  };
+
+  useEffect(() => {
+    console.log(Mass.symbol);
+  }, []);
+
   return (
     <Form
       {...layout}
@@ -169,20 +183,30 @@ const PlanetForm = (props: IProps): JSX.Element => {
       onFinishFailed={onFinishFailed}
     >
       <Form.Item label="Size" name="size">
-        <InputSize onChange={handleSizeChange} />
+        <InputSize
+          onChange={handleSizeChange}
+          symbol={Length.symbol?.toString()}
+        />
       </Form.Item>
       <Form.Item label="Mass" name="mass">
-        <InputMass onChange={handleMassChange} />
+        <InputMass
+          onChange={handleMassChange}
+          symbol={Mass.symbol?.toString()}
+        />
       </Form.Item>
       <Form.Item label="Density" name="density">
-        <InputDensity onChange={handleMassChange} />
+        <InputDensity
+          onChange={handleDensityChange}
+          symbol={Mass.symbol?.toString()}
+        />
       </Form.Item>
       <Form.Item label="Gravity" name="gravity">
-        <InputGravity onChange={handleGravityChange} />
+        <InputGravity onChange={handleGravityChange} symbol={"M/s^2"} />
       </Form.Item>
       <Form.Item label="Parent Star Temperature" name="parentStar">
         <InputParentStarTemperature
           onChange={handleParentStarTemperatureChange}
+          symbol={kelvin.symbol?.toString()}
         />
       </Form.Item>
       <Form.Item label="Parent Star Luminosity" name="parentStar">
@@ -194,7 +218,10 @@ const PlanetForm = (props: IProps): JSX.Element => {
         <InputAtmosphere onChange={handleAtmosphereChange} />
       </Form.Item>
       <Form.Item label="Air Pressure" name="airPressure">
-        <InputAirPressure onChange={handleAirPressureChange} />
+        <InputAirPressure
+          onChange={handleAirPressureChange}
+          symbol={atmospheres.symbol?.toString()}
+        />
       </Form.Item>
       <Form.Item label="Hydrosphere" name="hydrosphere">
         <InputHydrosphere onChange={handleHydrosphereChange} />
@@ -203,16 +230,25 @@ const PlanetForm = (props: IProps): JSX.Element => {
         <InputHydrosphereElement onChange={handleHydrosphereElementChange} />
       </Form.Item>
       <Form.Item label="Average Temperature" name="averageTemperature">
-        <InputAverageTemperature onChange={handleAverageTemperatureChange} />
+        <InputAverageTemperature
+          onChange={handleAverageTemperatureChange}
+          symbol={kelvin.symbol?.toString()}
+        />
       </Form.Item>
       <Form.Item label="Life" name="life">
         <InputLife onChange={handleLifeChange} />
       </Form.Item>
       <Form.Item label="Bond Albedo" name="bondAlbedo">
-        <InputBondAlbedo onChange={handleBondAlbedoChange} />
+        <InputBondAlbedo
+          onChange={handleBondAlbedoChange}
+          symbol={Dimensionless.symbol?.toString()}
+        />
       </Form.Item>
       <Form.Item label="Orbital Distance" name="orbitalDistance">
-        <InputOrbitalDistance onChange={handleOrbitalDistanceChange} />
+        <InputOrbitalDistance
+          onChange={handleOrbitalDistanceChange}
+          symbol={AU.symbol?.toString()}
+        />
       </Form.Item>
     </Form>
   );

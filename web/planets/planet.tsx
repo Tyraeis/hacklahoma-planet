@@ -36,7 +36,7 @@ const GAS_CONSTANT = Measure.of(
   8.3143,
   newtons.times(meters).per(moles.times(kelvin))
 );
-const AU = Measure.of(1.496e8, kilo(meters), "AU");
+export const AU = Measure.of(1.496e8, kilo(meters), "AU");
 
 export const EARTH_MASS = Measure.of(5.972e24, kilograms, "M 🜨");
 export const EARTH_RADIUS = Measure.of(6371, kilo(meters), "R 🜨");
@@ -120,11 +120,11 @@ export enum AtmosphereType {
 }
 
 export const PLANET_MAX_SIZE: Length = Measure.of(20000, kilo(meters));
-export const PLANET_MIN_SIZE: Length = Measure.of(1, kilo(meters));
-export const PLANET_DEF_SIZE: Length = Measure.of(5000, kilo(meters));
-export const PLANET_MAX_MASS: Mass = Measure.of(1e27, kilo(grams));
-export const PLANET_MIN_MASS: Mass = Measure.of(1, kilo(grams));
-export const PLANET_DEF_MASS: Mass = Measure.of(5e24, kilo(grams));
+export const PLANET_MIN_SIZE: Length = Measure.of(0.1, kilo(meters));
+export const PLANET_DEF_SIZE: Length = Measure.of(10, kilo(meters));
+export const PLANET_MAX_MASS: Mass = Measure.of(1000, EARTH_MASS);
+export const PLANET_MIN_MASS: Mass = Measure.of(.01, EARTH_MASS);
+export const PLANET_DEF_MASS: Mass = Measure.of(1, EARTH_MASS);
 export const PLANET_MAX_DENSITY: VolumeDensity = Measure.of(15, grams.per(centi(meters).cubed()));
 export const PLANET_MIN_DENSITY: VolumeDensity = Measure.of(0.001, VolumeDensity);
 export const PLANET_DEF_DENSITY: VolumeDensity = Measure.of(5.513, grams.per(centi(meters).cubed()));

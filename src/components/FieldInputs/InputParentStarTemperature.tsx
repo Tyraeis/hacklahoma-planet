@@ -9,10 +9,11 @@ import Slider from "../Slider";
 
 interface IProps {
   onChange: (value: number) => void;
+  symbol: string | undefined;
 }
 
 const InputParentStarTemperature = (props: IProps): JSX.Element => {
-  const { onChange } = props;
+  const { onChange, symbol } = props;
 
   const [value, setValue] = useState<number>(0);
 
@@ -42,6 +43,7 @@ const InputParentStarTemperature = (props: IProps): JSX.Element => {
           value={value}
           onChange={handleChange}
         />
+        {symbol}
       </Col>
     </Row>
   );
