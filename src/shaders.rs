@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::rc::Rc;
 use std::cell::RefCell;
 use anyhow::{ anyhow, Result };
-use web_sys::{ WebGlRenderingContext, WebGlShader, WebGlProgram };
+use web_sys::{ WebGlRenderingContext, WebGlShader, WebGlProgram, WebGlUniformLocation };
 use crate::mesh::ArrayBuffer;
 
 static DEFAULT_VERTEX_SHADER: &'static str = include_str!("./vertex_shader.glsl");
@@ -51,12 +51,18 @@ pub struct Attrib {
 }
 
 #[derive(Clone)]
+pub struct Uniform {
+    pub loc: WebGlUniformLocation
+}
+
+#[derive(Clone)]
 pub struct ShaderProgram {
     gl: WebGlRenderingContext,
     vertex_shader: Shader,
     fragment_shader: Shader,
     program: WebGlProgram,
-    attribs: Rc<RefCell<HashMap<String, Attrib>>>
+    attribs: Rc<RefCell<HashMap<String, Attrib>>>,
+    uniforms: Rc<RefCell<HashMap<String, Uniform>>>
 }
 
 impl ShaderProgram {
@@ -79,13 +85,15 @@ impl ShaderProgram {
             vertex_shader,
             fragment_shader,
             program,
-            attribs: Rc::new(RefCell::new(HashMap::new()))
+            attribs: Rc::new(RefCell::new(HashMap::new())),
+            uniforms: Rc::new(RefCell::new(HashMap::new()))
         })
     }
 
     pub fn default(gl: &WebGlRenderingContext) -> Result<Self> {
         let p = ShaderProgram::new(gl, DEFAULT_VERTEX_SHADER, DEFAULT_FRAGMENT_SHADER)?
-            .with_attrib("a_position", 3, WebGlRenderingContext::FLOAT);
+            .with_attrib("position", 3, WebGlRenderingContext::FLOAT)
+            .with_uniform("transform_matrix");
         Ok(p)
     }
 
@@ -103,6 +111,19 @@ impl ShaderProgram {
         self
     }
 
+    pub fn with_uniform(self, name: &str) -> Self {
+        let loc = self.gl.get_uniform_location(&self.program, name);
+        if let Some(loc) = loc {
+            let uniform = Uniform {
+                loc
+            };
+            self.uniforms.borrow_mut().insert(name.to_owned(), uniform);
+        } else {
+            log::error!("get_uniform_location returned None");
+        }
+        self
+    }
+
     pub fn set_attrib_arraybuffer(&self, name: &str, buf: &ArrayBuffer) -> Result<()> {
         let attribs = self.attribs.borrow();
         let attrib = attribs.get(name)
@@ -110,6 +131,16 @@ impl ShaderProgram {
         self.gl.enable_vertex_attrib_array(attrib.loc);
         buf.bind();
         self.gl.vertex_attrib_pointer_with_i32(attrib.loc, attrib.size, attrib.kind, false, buf.stride, buf.offset);
+        Ok(())
+    }
+
+    pub fn set_uniform_mat4<M>(&self, name: &str, mat: M) -> Result<()>
+    where M: AsRef<[f32]>
+    {
+        let uniforms = self.uniforms.borrow();
+        let uniform = uniforms.get(name)
+            .ok_or(anyhow!("Unknown uniform: {}", name))?;
+        self.gl.uniform_matrix4fv_with_f32_array(Some(&uniform.loc), false, &mat.as_ref());
         Ok(())
     }
 

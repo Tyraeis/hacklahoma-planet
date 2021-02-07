@@ -1,5 +1,6 @@
-use js_sys::Float32Array;
+use js_sys::{ Float32Array, Uint16Array };
 use web_sys::{ WebGlRenderingContext, WebGlBuffer };
+use cgmath::Matrix4;
 use crate::shaders::ShaderProgram;
 
 pub struct Buffer {
@@ -20,7 +21,7 @@ impl Buffer {
         self.gl.bind_buffer(target, Some(&self.buffer));
     }
 
-    pub fn data(&self, target: u32, data: &[f32], usage: u32) {
+    pub fn data_f32(&self, target: u32, data: &[f32], usage: u32) {
         // Safety: "Views into WebAssembly memory are only valid so long as the backing buffer isn't
         // resized in JS." The array is only passed to WebGl and then immediately discarded, so this
         // is safe.
@@ -28,6 +29,19 @@ impl Buffer {
         // See: https://rustwasm.github.io/wasm-bindgen/api/js_sys/struct.Float32Array.html#method.view
         unsafe {
             let array = Float32Array::view(data);
+            self.bind(target);
+            self.gl.buffer_data_with_array_buffer_view(target, &array, usage);
+        }
+    }
+
+    pub fn data_u16(&self, target: u32, data: &[u16], usage: u32) {
+        // Safety: "Views into WebAssembly memory are only valid so long as the backing buffer isn't
+        // resized in JS." The array is only passed to WebGl and then immediately discarded, so this
+        // is safe.
+        //
+        // See: https://rustwasm.github.io/wasm-bindgen/api/js_sys/struct.Uint16Array.html#method.view
+        unsafe {
+            let array = Uint16Array::view(data);
             self.bind(target);
             self.gl.buffer_data_with_array_buffer_view(target, &array, usage);
         }
@@ -58,8 +72,7 @@ impl ArrayBuffer {
     }
 
     pub fn data(&mut self, data: &[f32], usage: u32, num_components: i32, stride: i32, offset: i32) {
-        self.bind();
-        self.buffer.data(WebGlRenderingContext::ARRAY_BUFFER, data, usage);
+        self.buffer.data_f32(WebGlRenderingContext::ARRAY_BUFFER, data, usage);
         self.num_components = num_components;
         self.stride = stride;
         self.offset = offset;
@@ -70,25 +83,64 @@ impl ArrayBuffer {
     }
 }
 
+pub struct ElementArrayBuffer {
+    buffer: Buffer,
+    pub count: i32,
+    pub offset: i32,
+}
+
+impl ElementArrayBuffer {
+    pub fn new(gl: &WebGlRenderingContext) -> Self {
+        ElementArrayBuffer {
+            buffer: Buffer::new(gl),
+            count: 0,
+            offset: 0
+        }
+    }
+
+    pub fn data(&mut self, data: &[u16], usage: u32, count: i32, offset: i32) {
+        self.buffer.data_u16(WebGlRenderingContext::ELEMENT_ARRAY_BUFFER, data, usage);
+        self.count = count;
+        self.offset = offset;
+    }
+
+    pub fn bind(&self) {
+        self.buffer.bind(WebGlRenderingContext::ELEMENT_ARRAY_BUFFER);
+    }
+}
+
 pub struct Mesh {
     gl: WebGlRenderingContext,
-    vertices: ArrayBuffer,
-    shader: ShaderProgram
+    pub vertices: ArrayBuffer,
+    pub indices: ElementArrayBuffer,
+    pub shader: ShaderProgram
 }
 
 impl Mesh {
-    pub fn new(gl: &WebGlRenderingContext, vertices: ArrayBuffer, shader: &ShaderProgram) -> Self {
+    pub fn new(gl: &WebGlRenderingContext, vertices: ArrayBuffer, indices: ElementArrayBuffer, shader: &ShaderProgram) -> Self {
         Mesh {
             gl: gl.clone(),
             vertices,
+            indices,
             shader: shader.clone()
         }
     }
 
-    pub fn render(&self) {
+    pub fn render(&self, view_matrix: &Matrix4<f32>) {
+        let mat: &[f32; 16] = view_matrix.as_ref();
+
         self.shader.use_program();
-        self.shader.set_attrib_arraybuffer("a_position", &self.vertices)
+        self.shader.set_attrib_arraybuffer("position", &self.vertices)
             .expect("Error setting vertex positions");
-        self.gl.draw_arrays(WebGlRenderingContext::TRIANGLES, 0, self.vertices.num_components);
+        self.shader.set_uniform_mat4("transform_matrix", mat)
+            .expect("Error setting transform matrix");
+        
+        self.indices.bind();
+        self.gl.draw_elements_with_i32(
+            WebGlRenderingContext::TRIANGLES,
+            self.indices.count,
+            WebGlRenderingContext::UNSIGNED_SHORT,
+            self.indices.offset
+        );
     }
 }

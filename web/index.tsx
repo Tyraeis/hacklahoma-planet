@@ -10,11 +10,9 @@ ReactDOM.render(
 
 let canvas = document.getElementById('canvas');
 let renderer = new Renderer(canvas as HTMLCanvasElement);
-renderer.render();
-/* let i = 0
-function render() {
-    if (i < 10) requestAnimationFrame(render);
-    i += 1;
-    renderer.render();
+
+function render(now: number) {
+    requestAnimationFrame(render);
+    renderer.render(now / 1000);
 }
-render(); */
+requestAnimationFrame(render);
