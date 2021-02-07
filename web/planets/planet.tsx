@@ -17,19 +17,21 @@ import {
   yocto,
   moles,
   newtons,
+  wrapUnaryFn,
 } from "safe-units";
 
 export module StellarObjects {
   const cubic_meter = meters.toThe("3")
-  export const GRAVITIES = meters.per(seconds.squared()).scale(9.81);
+  export const GRAVITIES = Measure.of(1, meters.per(seconds.squared()).scale(9.81), "g");
   let mmHg = Measure.of(133.3, pascals, "mmHg");
   let amu = Measure.of(1.66053907, yocto(grams), "amu"); //Unified atomic mass unit
   const GAS_CONSTANT = Measure.of(8.3143, newtons.times(meters).per(moles.times(kelvin)))
-
-  export const EARTH_MASS = Measure.of(5.972e24, kilograms);
-  export const EARTH_RADIUS = Measure.of(6371, kilo(meters));
+  let atm = Measure.of(101325, pascals, "atm")
+  
+  export const EARTH_MASS = Measure.of(5.972e24, kilograms, "M 🜨");
+  export const EARTH_RADIUS = Measure.of(6371, kilo(meters), "R 🜨");
   export const EARTH_DIAMETER = EARTH_RADIUS.scale(2);
-  export const EARTH_DENSITY = Measure.of(5.514, grams.per(centi(cubic_meter)));
+  export const EARTH_DENSITY = Measure.of(5.514, grams.per(centi(meters).toThe("3")), "ρ 🜨"); //Do not use centi(cubic_meters)! They are not the same measurement!
 
   export enum HarvardSpectralType { //Star Color
     O,
@@ -155,6 +157,15 @@ export module StellarObjects {
     return gravity;
   }
 
+  export const computeMassFromDensityAndRadius = (p: Planet): Mass => {
+    let volume = p.size
+      .toThe("3")
+      .scale((4.0 / 3.0) * Math.PI);
+    let mass = volume.times(p.density)
+
+    return mass
+  }
+
   export const computeDensityFromMassAndRadius = (p: Planet): VolumeDensity => {
     let volume = p.size
       .toThe("3")
@@ -173,5 +184,34 @@ export module StellarObjects {
     let press = 760 * Math.exp(exponent.value)
 
     return Measure.of(press, mmHg)
+  }
+
+  export const getDisplayRadius = (p: Planet): string => {
+    return p.size.in(EARTH_RADIUS)
+  }
+
+  export const getDisplayDensity = (p: Planet): string => {
+    return p.density.in(EARTH_DENSITY)
+  }
+
+  export const getDisplayMass = (p: Planet): string => {
+    return p.mass.in(EARTH_MASS, {formatValue: m => m.toFixed(4)})
+  }
+
+  export const getDisplayGravity = (p: Planet): string => {
+    return p.gravity.in(GRAVITIES)
+  }
+
+  export const getDisplayPressure = (p: Planet): string => {
+    return p.airPressure.in(atm)
+  }
+
+  const _kelvinToFahrenheit = (k: number): number => {
+    return (k * (9.0/5.0)) - 459.67
+  }
+  const kelvinToFahrenheit = wrapUnaryFn(_kelvinToFahrenheit)
+
+  export const getDisplayTemperature = (p: Planet): string => {
+    return kelvinToFahrenheit(p.averageTemperature).toString({formatValue: f => f.toFixed(2), formatUnit: () => "°F"})
   }
 }
