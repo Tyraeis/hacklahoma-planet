@@ -8,6 +8,5 @@ const mynoise = (x: number, y: number): number => {
 }
 
 export const generatePlanetHeightMap = (frequency: number, amplitude: number, octaves: number = 8): number[] => {
-    console.log(noiseFunc.noise2D(128, 47))
     return makeRectangle(1024, 256, mynoise, {frequency: frequency, octaves: octaves, amplitude: amplitude});
 }
