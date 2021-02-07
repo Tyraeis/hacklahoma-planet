@@ -114,16 +114,25 @@ pub struct Mesh {
     pub vertices: ArrayBuffer,
     pub indices: ElementArrayBuffer,
     pub normals: ArrayBuffer,
+    pub colors: ArrayBuffer,
     pub shader: ShaderProgram
 }
 
 impl Mesh {
-    pub fn new(gl: &WebGlRenderingContext, vertices: ArrayBuffer, indices: ElementArrayBuffer, normals: ArrayBuffer, shader: &ShaderProgram) -> Self {
+    pub fn new(
+        gl: &WebGlRenderingContext,
+        vertices: ArrayBuffer,
+        indices: ElementArrayBuffer,
+        normals: ArrayBuffer,
+        colors: ArrayBuffer,
+        shader: &ShaderProgram
+    ) -> Self {
         Mesh {
             gl: gl.clone(),
             vertices,
             indices,
             normals,
+            colors,
             shader: shader.clone()
         }
     }
@@ -136,6 +145,8 @@ impl Mesh {
             .expect("Error setting vertex positions");
         self.shader.set_attrib_arraybuffer("normal", &self.normals)
             .expect("Error setting vertex normals");
+        self.shader.set_attrib_arraybuffer("color", &self.colors)
+            .expect("Error setting vertex colors");
         self.shader.set_uniform_mat4("world_view_projection", world_view_projection.as_ref() as &[f32; 16])
             .expect("Error setting world-view-projection matrix");
         self.shader.set_uniform_mat4("world_inverse_transpose", world_inverse_transpose.as_ref() as &[f32; 16])

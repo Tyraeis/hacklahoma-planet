@@ -94,6 +94,7 @@ impl ShaderProgram {
         let p = ShaderProgram::new(gl, DEFAULT_VERTEX_SHADER, DEFAULT_FRAGMENT_SHADER)?
             .with_attrib("position", 3, WebGlRenderingContext::FLOAT)
             .with_attrib("normal", 3, WebGlRenderingContext::FLOAT)
+            .with_attrib("color", 3, WebGlRenderingContext::FLOAT)
             .with_uniform("world_view_projection")
             .with_uniform("world_inverse_transpose");
         Ok(p)

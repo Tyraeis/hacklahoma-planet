@@ -153,8 +153,8 @@ impl Renderer {
             .map(|v| vec![v.pos.x, v.pos.y, v.pos.z])
             .collect();
         
-        let info = self.get_surface_info(&vertices);
-        
+        let mut info = self.get_surface_info(&vertices);
+
         let vertices: Vec<f32> = vertices.drain(..)
             .enumerate()
             .flat_map(|(i, v)| {
@@ -162,10 +162,10 @@ impl Renderer {
                 vec![v[0]*h, v[1]*h, v[2]*h]
             })
             .collect();
-
-        /* let normals: Vec<f32> = shape.shared_vertex_iter()
-            .flat_map(|v| vec![-v.normal.x, -v.normal.y, -v.normal.z])
-            .collect(); */
+        
+        let colors: Vec<f32> = info.drain(..)
+            .flat_map(|i| vec![i.color.0, i.color.1, i.color.2])
+            .collect();
 
         let indices: Vec<u32> = shape.indexed_polygon_iter()
             .flat_map(|t| vec![t.x, t.z, t.y])
@@ -182,7 +182,10 @@ impl Renderer {
 
         let mut normal_buf = ArrayBuffer::new(&self.gl);
         normal_buf.data(&normals, WebGlRenderingContext::STATIC_DRAW, shape.shared_vertex_count() as i32, 0, 0);
+        
+        let mut color_buf = ArrayBuffer::new(&self.gl);
+        color_buf.data(&colors, WebGlRenderingContext::STATIC_DRAW, shape.shared_vertex_count() as i32, 0, 0);
 
-        Mesh::new(&self.gl, vertex_buf, index_buf, normal_buf, &self.shader)
+        Mesh::new(&self.gl, vertex_buf, index_buf, normal_buf, color_buf, &self.shader)
     }
 }
