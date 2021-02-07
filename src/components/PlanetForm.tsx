@@ -134,35 +134,30 @@ const PlanetForm = (props: IProps): JSX.Element => {
       <Form.Item
         label="Size"
         name="size"
-        rules={[{ required: true, message: "Please input size!" }]}
       >
         <InputSize onChange={handleSizeChange} />
       </Form.Item>
       <Form.Item
         label="Mass"
         name="mass"
-        rules={[{ required: true, message: "Please input mass!" }]}
       >
         <InputMass onChange={handleMassChange} />
       </Form.Item>
       <Form.Item
         label="Density"
         name="density"
-        rules={[{ required: true, message: "Please input density!" }]}
       >
         <InputDensity onChange={handleMassChange} />
       </Form.Item>
       <Form.Item
         label="Gravity"
         name="gravity"
-        rules={[{ required: true, message: "Please input gravity!" }]}
       >
         <InputGravity onChange={handleGravityChange} />
       </Form.Item>
       <Form.Item
         label="Parent Star Temperature"
         name="parentStar"
-        rules={[{ required: true, message: "Please input parentStar!" }]}
       >
         <InputParentStarTemperature
           onChange={handleParentStarTemperatureChange}
@@ -171,7 +166,6 @@ const PlanetForm = (props: IProps): JSX.Element => {
       <Form.Item
         label="Parent Star Luminosity"
         name="parentStar"
-        rules={[{ required: true, message: "Please input parentStar!" }]}
       >
         <InputParentStarLuminosity
           onChange={handleParentStarLuminosityChange}
@@ -180,46 +174,36 @@ const PlanetForm = (props: IProps): JSX.Element => {
       <Form.Item
         label="Atmosphere"
         name="atmosphere"
-        rules={[{ required: true, message: "Please input atmosphere!" }]}
       >
         <InputAtmosphere onChange={handleAtmosphereChange} />
       </Form.Item>
       <Form.Item
         label="Air Pressure"
         name="airPressure"
-        rules={[{ required: true, message: "Please input airPressure!" }]}
       >
         <InputAirPressure onChange={handleAirPressureChange}/>
       </Form.Item>
       <Form.Item
         label="Hydrosphere"
         name="hydrosphere"
-        rules={[{ required: true, message: "Please input hydrosphere!" }]}
       >
         <InputHydrosphere onChange={handleHydrosphereChange}/>
       </Form.Item>
       <Form.Item
         label="Hydrosphere Element"
         name="hydrosphereElement"
-        rules={[
-          { required: true, message: "Please input hydrosphereElement!" },
-        ]}
       >
         <InputHydrosphereElement onChange={handleHydrosphereElementChange}/>
       </Form.Item>
       <Form.Item
         label="Average Temperature"
         name="averageTemperature"
-        rules={[
-          { required: true, message: "Please input averageTemperature!" },
-        ]}
       >
         <InputAverageTemperature onChange={handleAverageTemperatureChange}/>
       </Form.Item>
       <Form.Item
         label="Life"
         name="life"
-        rules={[{ required: true, message: "Please input life!" }]}
       >
         <InputLife onChange={handleLifeChange}/>
       </Form.Item>

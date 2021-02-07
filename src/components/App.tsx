@@ -6,8 +6,9 @@ import { STANDARD_SPACING } from "../constants/styles";
 import Checkbox from "./Checkbox";
 import RadioGroup, { IRadioOption } from "./RadioGroup";
 import SimpleSelect from "./SimpleSelect";
-import 'antd/dist/antd.css';
+import "antd/dist/antd.css";
 import PlanetForm from "./PlanetForm";
+import { Col, Row } from "antd";
 
 const Layout = styled.div`
   display: flex;
@@ -17,16 +18,16 @@ const Layout = styled.div`
 `;
 
 const radioOptions: IRadioOption[] = [
-  {label: "Option 1", value: "Value 1"},
-  {label: "Option 2", value: "Value 2"},
-  {label: "Option 3", value: "Value 3"},
-  {label: "Option 4", value: "Value 4"}
-]
+  { label: "Option 1", value: "Value 1" },
+  { label: "Option 2", value: "Value 2" },
+  { label: "Option 3", value: "Value 3" },
+  { label: "Option 4", value: "Value 4" },
+];
 
 const App = (): JSX.Element => {
   const [testValue, setTestValue] = useState<number>(0);
   const [checked, setChecked] = useState<boolean>(false);
-  const [selectedValue, setSelectedValue] = useState<string>('');
+  const [selectedValue, setSelectedValue] = useState<string>("");
 
   const handleCheckboxChange = () => {
     setTestValue(testValue + 1);
@@ -38,12 +39,17 @@ const App = (): JSX.Element => {
   };
 
   const handleSelectChange = (value: string) => {
-    setSelectedValue(value)
-  }
+    setSelectedValue(value);
+  };
 
   return (
     <Layout>
-        <PlanetForm />
+      <Row>
+        <Col span={12}>
+          <PlanetForm />
+        </Col>
+        <Col span={12}></Col>
+      </Row>
     </Layout>
   );
 };

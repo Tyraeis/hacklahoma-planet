@@ -18,6 +18,8 @@ import {
   moles,
   newtons,
   wrapUnaryFn,
+  Volume,
+  atmospheres,
 } from "safe-units";
 
 const cubic_meter = meters.toThe("3");
@@ -113,6 +115,19 @@ export enum AtmosphereType {
   Corrosive = "Corrosive", //Halogens, sulfur/nitrogen oxides, etc.
   Reducing = "Reducing", //Reducing agents: atomic hydrogen, boranes, cyanides, some acids, etc
 }
+
+export const PLANET_MAX_SIZE: Length = Measure.of(1000000, kilo(meters));
+export const PLANET_MIN_SIZE: Length = Measure.of(0, kilo(meters));
+export const PLANET_MAX_MASS: Mass = Measure.of(1000000, kilo(grams));
+export const PLANET_MIN_MASS: Mass = Measure.of(0, kilo(grams));
+export const PLANET_MAX_DENSITY: Mass = Measure.of(1000000, VolumeDensity);
+export const PLANET_MIN_DENSITY: Mass = Measure.of(0, VolumeDensity);
+export const PLANET_MAX_GRAVITY: Acceleration = Measure.of(10000, GRAVITIES);
+export const PLANET_MIN_GRAVITY: Acceleration = Measure.of(0, GRAVITIES);
+export const PLANET_MAX_AIR_PRESSURE: Pressure = Measure.of(1000000, atmospheres);
+export const PLANET_MIN_AIR_PRESSURE: Pressure = Measure.of(0, atmospheres);
+export const PLANET_MAX_TEMPERATURE: Temperature = Measure.of(1000000, kelvin);
+export const PLANET_MIN_TEMPERATURE: Temperature = Measure.of(0, kelvin);
 
 export type Planet = {
   size: Length; //Radius in km

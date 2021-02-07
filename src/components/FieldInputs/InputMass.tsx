@@ -1,9 +1,10 @@
 import React from "react";
 import { Length } from "safe-units";
+import { PLANET_MAX_MASS, PLANET_MIN_MASS } from "../../../web/planets/planet";
 import Slider from "../Slider";
 
 interface IProps {
-  onChange?: (value: number) => void;
+  onChange: (value: number) => void;
 }
 
 const InputMass = (props: IProps): JSX.Element => {
@@ -11,7 +12,7 @@ const InputMass = (props: IProps): JSX.Element => {
 
   return (
     <>
-      <Slider min={0} max={1000000} defaultValue={100000} onChange={onChange} />
+      <Slider min={PLANET_MIN_MASS.value} max={PLANET_MAX_MASS.value} defaultValue={PLANET_MAX_MASS.value / 10} onChange={onChange} />
     </>
   );
 };
