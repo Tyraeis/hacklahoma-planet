@@ -233,7 +233,7 @@ const PlanetForm = (props: IProps): JSX.Element => {
           symbol={Length.symbol?.toString()}
         />
       </Form.Item>
-      <Form.Item label={<Label />} name="mass">
+      <Form.Item label='Mass'  name="mass">
         <InputMass
           onChange={handleMassChange}
           symbol={Mass.symbol?.toString()}
