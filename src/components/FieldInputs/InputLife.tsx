@@ -3,7 +3,7 @@ import { BiosphereType } from "../../../web/planets/planet";
 import SimpleSelect from "../SimpleSelect";
 
 interface IProps {
-  onChange?: (value: BiosphereType) => void;
+  onChange: (value: BiosphereType) => void;
 }
 
 const options = [
@@ -42,8 +42,8 @@ const options = [
 ];
 
 const InputLife = (props: IProps): JSX.Element => {
-  const {} = props;
-  return <SimpleSelect options={options} />;
+  const {onChange} = props;
+  return <SimpleSelect options={options} onChange={onChange}/>;
 };
 
 export default InputLife;

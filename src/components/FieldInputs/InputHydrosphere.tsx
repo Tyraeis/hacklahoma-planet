@@ -3,7 +3,7 @@ import { HydrosphereType } from "../../../web/planets/planet";
 import SimpleSelect from "../SimpleSelect";
 
 interface IProps {
-  onChange?: (value: HydrosphereType) => void;
+  onChange: (value: HydrosphereType) => void;
 }
 
 const options = [
@@ -22,8 +22,8 @@ const options = [
 ];
 
 const InputAtmosphere = (props: IProps): JSX.Element => {
-  const {} = props;
-  return <SimpleSelect options={options} />;
+  const {onChange} = props;
+  return <SimpleSelect options={options} onChange={onChange}/>;
 };
 
 export default InputAtmosphere;

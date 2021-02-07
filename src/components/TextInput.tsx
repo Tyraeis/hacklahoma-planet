@@ -2,7 +2,7 @@ import { Input } from "antd"
 import React, { ChangeEvent } from "react"
 
 interface IProps {
-    onChange?: (value: string) => void;
+    onChange: (value: string) => void;
 }
 const TextInput = (props: IProps): JSX.Element => {
     const { onChange } = props;

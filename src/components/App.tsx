@@ -17,30 +17,7 @@ const Layout = styled.div`
   padding: ${STANDARD_SPACING};
 `;
 
-const radioOptions: IRadioOption[] = [
-  { label: "Option 1", value: "Value 1" },
-  { label: "Option 2", value: "Value 2" },
-  { label: "Option 3", value: "Value 3" },
-  { label: "Option 4", value: "Value 4" },
-];
-
 const App = (): JSX.Element => {
-  const [testValue, setTestValue] = useState<number>(0);
-  const [checked, setChecked] = useState<boolean>(false);
-  const [selectedValue, setSelectedValue] = useState<string>("");
-
-  const handleCheckboxChange = () => {
-    setTestValue(testValue + 1);
-    setChecked(!checked);
-  };
-
-  const handleButtonPress = () => {
-    setTestValue(testValue - 1);
-  };
-
-  const handleSelectChange = (value: string) => {
-    setSelectedValue(value);
-  };
 
   return (
     <Layout>

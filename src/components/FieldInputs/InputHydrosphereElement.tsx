@@ -2,7 +2,7 @@ import React from "react";
 import TextInput from "../TextInput";
 
 interface IProps {
-  onChange?: (value: string) => void;
+  onChange: (value: string) => void;
 }
 
 const InputHydrosphereElement = (props: IProps): JSX.Element => {

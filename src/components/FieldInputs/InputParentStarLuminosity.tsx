@@ -3,7 +3,7 @@ import { YerkesSpectralType } from "../../../web/planets/planet";
 import SimpleSelect from "../SimpleSelect";
 
 interface IProps {
-  onChange?: (value: YerkesSpectralType) => void;
+  onChange: (value: YerkesSpectralType) => void;
 }
 
 const options = [
@@ -50,8 +50,8 @@ const options = [
 ];
 
 const InputParentStarLuminosity = (props: IProps): JSX.Element => {
-  const {} = props;
-  return <SimpleSelect options={options} />;
+  const { onChange } = props;
+  return <SimpleSelect options={options} onChange={onChange}/>;
 };
 
 export default InputParentStarLuminosity;

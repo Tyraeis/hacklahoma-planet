@@ -5,7 +5,7 @@ import React from "react"
 interface IProps {
     checked: boolean;
     defaultChecked?: boolean;
-    onChange?: (value: boolean) => void;
+    onChange: (value: boolean) => void;
 }
 
 const Checkbox = (props: IProps): JSX.Element => {

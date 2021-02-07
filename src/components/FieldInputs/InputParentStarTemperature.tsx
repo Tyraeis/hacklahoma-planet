@@ -2,7 +2,7 @@ import React from "react";
 import Slider from "../Slider";
 
 interface IProps {
-  onChange?: (value: number) => void;
+  onChange: (value: number) => void;
 }
 
 const InputParentStarTemperature = (props: IProps): JSX.Element => {
