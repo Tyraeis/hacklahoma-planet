@@ -22,6 +22,7 @@ import {
   atmospheres,
   Dimensionless,
   wrapRootFn,
+  giga,
 } from "safe-units";
 
 const cubic_meter = meters.cubed();
@@ -118,22 +119,22 @@ export enum AtmosphereType {
   Reducing = "Reducing", //Reducing agents: atomic hydrogen, boranes, cyanides, some acids, etc
 }
 
-export const PLANET_MAX_SIZE: Length = Measure.of(1000000, kilo(meters));
-export const PLANET_MIN_SIZE: Length = Measure.of(0, kilo(meters));
-export const PLANET_MAX_MASS: Mass = Measure.of(1000000, kilo(grams));
-export const PLANET_MIN_MASS: Mass = Measure.of(0, kilo(grams));
-export const PLANET_MAX_DENSITY: Mass = Measure.of(1000000, VolumeDensity);
-export const PLANET_MIN_DENSITY: Mass = Measure.of(0, VolumeDensity);
-export const PLANET_MAX_GRAVITY: Acceleration = Measure.of(10000, GRAVITIES);
+export const PLANET_MAX_SIZE: Length = Measure.of(20000, kilo(meters));
+export const PLANET_MIN_SIZE: Length = Measure.of(0.1, kilo(meters));
+export const PLANET_MAX_MASS: Mass = Measure.of(1e27, kilo(grams));
+export const PLANET_MIN_MASS: Mass = Measure.of(1, kilo(grams));
+export const PLANET_MAX_DENSITY: Mass = Measure.of(15, grams.per(centi(meters).cubed()));
+export const PLANET_MIN_DENSITY: Mass = Measure.of(0.001, VolumeDensity);
+export const PLANET_MAX_GRAVITY: Acceleration = Measure.of(10, GRAVITIES);
 export const PLANET_MIN_GRAVITY: Acceleration = Measure.of(0, GRAVITIES);
-export const PLANET_MAX_AIR_PRESSURE: Pressure = Measure.of(1000000, atmospheres);
+export const PLANET_MAX_AIR_PRESSURE: Pressure = Measure.of(100, atmospheres);
 export const PLANET_MIN_AIR_PRESSURE: Pressure = Measure.of(0, atmospheres);
-export const PLANET_MAX_TEMPERATURE: Temperature = Measure.of(1000000, kelvin);
-export const PLANET_MIN_TEMPERATURE: Temperature = Measure.of(0, kelvin);
-export const PLANET_MAX_BOND_ALBEDO: Dimensionless = Measure.of(1000000, Dimensionless);
+export const PLANET_MAX_TEMPERATURE: Temperature = Measure.of(2881, kelvin);
+export const PLANET_MIN_TEMPERATURE: Temperature = Measure.of(1, kelvin);
+export const PLANET_MAX_BOND_ALBEDO: Dimensionless = Measure.of(1, Dimensionless);
 export const PLANET_MIN_BOND_ALBEDO: Dimensionless = Measure.of(0, Dimensionless);
-export const PLANET_MAX_ORBITAL_DISTANCE: Length = Measure.of(1000000, kilo(meters));
-export const PLANET_MIN_ORBITAL_DISTANCE: Length = Measure.of(0, kilo(meters));
+export const PLANET_MAX_ORBITAL_DISTANCE: Length = Measure.of(2000, AU);
+export const PLANET_MIN_ORBITAL_DISTANCE: Length = Measure.of(0.3, AU);
 
 export type Planet = {
   size: Length; //Radius in km
