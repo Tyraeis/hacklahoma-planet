@@ -28,13 +28,11 @@ export const GRAVITIES = Measure.of(
   meters.per(seconds.squared()).scale(9.81),
   "g"
 );
-let mmHg = Measure.of(133.3, pascals, "mmHg");
 let amu = Measure.of(1.66053907, yocto(grams), "amu"); //Unified atomic mass unit
 const GAS_CONSTANT = Measure.of(
   8.3143,
   newtons.times(meters).per(moles.times(kelvin))
 );
-let atm = Measure.of(101325, pascals, "atm");
 
 export const EARTH_MASS = Measure.of(5.972e24, kilograms, "M 🜨");
 export const EARTH_RADIUS = Measure.of(6371, kilo(meters), "R 🜨");
@@ -186,9 +184,9 @@ export const getPressureAtAlt = (p: Planet, alt: Length): Pressure => {
   let RT = GAS_CONSTANT.times(p.averageTemperature);
 
   let exponent = mgh.div(RT);
-  let press = 760 * Math.exp(exponent.value);
+  let press = p.airPressure.value * Math.exp(exponent.value);
 
-  return Measure.of(press, mmHg);
+  return Measure.of(press, pascals);
 };
 
 export const getDisplayRadius = (p: Planet): string => {
@@ -208,7 +206,7 @@ export const getDisplayGravity = (p: Planet): string => {
 };
 
 export const getDisplayPressure = (p: Planet): string => {
-  return p.airPressure.in(atm);
+  return p.airPressure.in(atmospheres);
 };
 
 const _kelvinToFahrenheit = (k: number): number => {
