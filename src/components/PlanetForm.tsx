@@ -21,6 +21,7 @@ import {
   kelvin,
   Pressure,
   atmospheres,
+  Dimensionless,
 } from "safe-units";
 import InputParentStarTemperature from "./FieldInputs/InputParentStarTemperature";
 import InputParentStarLuminosity from "./FieldInputs/InputParentStarLuminosity";
@@ -35,6 +36,8 @@ import {
   YerkesSpectralType,
 } from "../../web/planets/planet";
 import InputLife from "./FieldInputs/InputLife";
+import InputBondAlbedo from "./FieldInputs/InputBondAlbedo";
+import InputOrbitalDistance from "./FieldInputs/InputOrbitalDistance";
 
 const layout = {
   labelCol: { span: 8 },
@@ -45,9 +48,15 @@ interface IProps {}
 
 const PlanetForm = (props: IProps): JSX.Element => {
   const [currentPlanet, setCurrentPlanet] = useState<Planet | undefined>();
-  const [planetSize, setPlanetSize] = useState<Length>(Measure.of(0, kilo(meters)));
-  const [planetMass, setPlanetMass] = useState<Mass>(Measure.of(0, kilo(grams)));
-  const [planetGravity, setPlanetGravity] = useState<Acceleration>(Measure.of(0, GRAVITIES));
+  const [planetSize, setPlanetSize] = useState<Length>(
+    Measure.of(0, kilo(meters))
+  );
+  const [planetMass, setPlanetMass] = useState<Mass>(
+    Measure.of(0, kilo(grams))
+  );
+  const [planetGravity, setPlanetGravity] = useState<Acceleration>(
+    Measure.of(0, GRAVITIES)
+  );
   const [
     parentStarTemperature,
     setParentStarTemperature,
@@ -57,12 +66,34 @@ const PlanetForm = (props: IProps): JSX.Element => {
     setParentStarLuminosity,
   ] = useState<YerkesSpectralType>(YerkesSpectralType.V);
   const [parentStar, setParentStar] = useState<Star | undefined>();
-  const [planetAtmosphere, setPlanetAtmosphere] = useState<AtmosphereType>(AtmosphereType.None);
-  const [planetHydrosphere, setPlanetHydrosphere] = useState<HydrosphereType>(HydrosphereType.None);
-  const [planetLife, setPlanetLife] = useState<BiosphereType>(BiosphereType.None);
-  const [planetAirPressure, setPlanetAirPressure] = useState<Pressure>(Measure.of(0, atmospheres));
-  const [planetHydrosphereElement, setPlanetHydrosphereElement] = useState<string>('');
-  const [planetAverageTemperature, setPlanetAverageTemperature] = useState<Temperature>(Measure.of(0, kelvin));
+  const [planetAtmosphere, setPlanetAtmosphere] = useState<AtmosphereType>(
+    AtmosphereType.None
+  );
+  const [planetHydrosphere, setPlanetHydrosphere] = useState<HydrosphereType>(
+    HydrosphereType.None
+  );
+  const [planetLife, setPlanetLife] = useState<BiosphereType>(
+    BiosphereType.None
+  );
+  const [planetAirPressure, setPlanetAirPressure] = useState<Pressure>(
+    Measure.of(0, atmospheres)
+  );
+  const [
+    planetHydrosphereElement,
+    setPlanetHydrosphereElement,
+  ] = useState<string>("");
+  const [
+    planetAverageTemperature,
+    setPlanetAverageTemperature,
+  ] = useState<Temperature>(Measure.of(0, kelvin));
+  const [
+    planetBondAlbedo,
+    setPlanetBondAlbedo,
+  ] = useState<Dimensionless>(Measure.of(0, Dimensionless));
+  const [
+    planetOrbitalDistance,
+    setPlanetOrbitalDistance,
+  ] = useState<Length>(Measure.of(0, kilo(meters)));
   const {} = props;
 
   const onFinish = (values: any) => {
@@ -110,19 +141,25 @@ const PlanetForm = (props: IProps): JSX.Element => {
   };
 
   const handleAirPressureChange = (value: number) => {
-    setPlanetAirPressure(Measure.of(value, atmospheres))
-  }
-
+    setPlanetAirPressure(Measure.of(value, atmospheres));
+  };
 
   const handleHydrosphereElementChange = (value: string) => {
-    setPlanetHydrosphereElement(value)
-  }
+    setPlanetHydrosphereElement(value);
+  };
 
-  
   const handleAverageTemperatureChange = (value: number) => {
-    setPlanetAverageTemperature(Measure.of(value, kelvin))
+    setPlanetAverageTemperature(Measure.of(value, kelvin));
+  };
+
+  const handleBondAlbedoChange = (value: number) => {
+    setPlanetBondAlbedo(Measure.of(value, kilo(grams)))
   }
 
+  const handleOrbitalDistanceChange = (value: number) => {
+    setPlanetBondAlbedo(Measure.of(value, kilo(meters)))
+  }
+  
   return (
     <Form
       {...layout}
@@ -131,81 +168,51 @@ const PlanetForm = (props: IProps): JSX.Element => {
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
     >
-      <Form.Item
-        label="Size"
-        name="size"
-      >
+      <Form.Item label="Size" name="size">
         <InputSize onChange={handleSizeChange} />
       </Form.Item>
-      <Form.Item
-        label="Mass"
-        name="mass"
-      >
+      <Form.Item label="Mass" name="mass">
         <InputMass onChange={handleMassChange} />
       </Form.Item>
-      <Form.Item
-        label="Density"
-        name="density"
-      >
+      <Form.Item label="Density" name="density">
         <InputDensity onChange={handleMassChange} />
       </Form.Item>
-      <Form.Item
-        label="Gravity"
-        name="gravity"
-      >
+      <Form.Item label="Gravity" name="gravity">
         <InputGravity onChange={handleGravityChange} />
       </Form.Item>
-      <Form.Item
-        label="Parent Star Temperature"
-        name="parentStar"
-      >
+      <Form.Item label="Parent Star Temperature" name="parentStar">
         <InputParentStarTemperature
           onChange={handleParentStarTemperatureChange}
         />
       </Form.Item>
-      <Form.Item
-        label="Parent Star Luminosity"
-        name="parentStar"
-      >
+      <Form.Item label="Parent Star Luminosity" name="parentStar">
         <InputParentStarLuminosity
           onChange={handleParentStarLuminosityChange}
         />
       </Form.Item>
-      <Form.Item
-        label="Atmosphere"
-        name="atmosphere"
-      >
+      <Form.Item label="Atmosphere" name="atmosphere">
         <InputAtmosphere onChange={handleAtmosphereChange} />
       </Form.Item>
-      <Form.Item
-        label="Air Pressure"
-        name="airPressure"
-      >
-        <InputAirPressure onChange={handleAirPressureChange}/>
+      <Form.Item label="Air Pressure" name="airPressure">
+        <InputAirPressure onChange={handleAirPressureChange} />
       </Form.Item>
-      <Form.Item
-        label="Hydrosphere"
-        name="hydrosphere"
-      >
-        <InputHydrosphere onChange={handleHydrosphereChange}/>
+      <Form.Item label="Hydrosphere" name="hydrosphere">
+        <InputHydrosphere onChange={handleHydrosphereChange} />
       </Form.Item>
-      <Form.Item
-        label="Hydrosphere Element"
-        name="hydrosphereElement"
-      >
-        <InputHydrosphereElement onChange={handleHydrosphereElementChange}/>
+      <Form.Item label="Hydrosphere Element" name="hydrosphereElement">
+        <InputHydrosphereElement onChange={handleHydrosphereElementChange} />
       </Form.Item>
-      <Form.Item
-        label="Average Temperature"
-        name="averageTemperature"
-      >
-        <InputAverageTemperature onChange={handleAverageTemperatureChange}/>
+      <Form.Item label="Average Temperature" name="averageTemperature">
+        <InputAverageTemperature onChange={handleAverageTemperatureChange} />
       </Form.Item>
-      <Form.Item
-        label="Life"
-        name="life"
-      >
-        <InputLife onChange={handleLifeChange}/>
+      <Form.Item label="Life" name="life">
+        <InputLife onChange={handleLifeChange} />
+      </Form.Item>
+      <Form.Item label="Bond Albedo" name="bondAlbedo">
+        <InputBondAlbedo onChange={handleBondAlbedoChange} />
+      </Form.Item>
+      <Form.Item label="Orbital Distance" name="orbitalDistance">
+        <InputOrbitalDistance onChange={handleOrbitalDistanceChange} />
       </Form.Item>
     </Form>
   );

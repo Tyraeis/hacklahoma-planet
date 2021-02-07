@@ -130,6 +130,10 @@ export const PLANET_MAX_AIR_PRESSURE: Pressure = Measure.of(1000000, atmospheres
 export const PLANET_MIN_AIR_PRESSURE: Pressure = Measure.of(0, atmospheres);
 export const PLANET_MAX_TEMPERATURE: Temperature = Measure.of(1000000, kelvin);
 export const PLANET_MIN_TEMPERATURE: Temperature = Measure.of(0, kelvin);
+export const PLANET_MAX_BOND_ALBEDO: Dimensionless = Measure.of(1000000, Dimensionless);
+export const PLANET_MIN_BOND_ALBEDO: Dimensionless = Measure.of(0, Dimensionless);
+export const PLANET_MAX_ORBITAL_DISTANCE: Length = Measure.of(1000000, kilo(meters));
+export const PLANET_MIN_ORBITAL_DISTANCE: Length = Measure.of(0, kilo(meters));
 
 export type Planet = {
   size: Length; //Radius in km
